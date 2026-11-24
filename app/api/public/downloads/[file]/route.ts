@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { apiError } from "@/lib/api-response";
 
 /**
  * Distribuição via APK foi descontinuada: o Android exibe o aviso do Google
  * Play Protect para sideload. Os aplicativos agora são instalados como PWA.
- *Esta rota retorna 410 (Gone) para qualquer arquivo, inclusive links antigos.
+ * Esta rota retorna 410 (Gone) para qualquer arquivo, inclusive links antigos.
  */
 export const dynamic = "force-dynamic";
 
