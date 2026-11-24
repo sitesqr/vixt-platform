@@ -78,8 +78,9 @@ async function register(input: {
 }
 
 async function announceAndroid(applicationId: string, label: string) {
+  // Não anuncia "Em breve" se já existir qualquer distribuição Android ativa.
   const existing = await prisma.distribution.findFirst({
-    where: { applicationId, platform: "ANDROID", availability: "COMING_SOON" },
+    where: { applicationId, platform: "ANDROID", active: true },
   });
   if (existing) return;
   await prisma.distribution.create({
