@@ -67,6 +67,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={vixtFont.variable}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__vixtInstallPrompt=e;});`,
+          }}
+        />
+      </head>
       <body>
         {children}
         <PwaRegister />

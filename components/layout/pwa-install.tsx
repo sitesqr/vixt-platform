@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Download, Check } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -8,14 +8,21 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+declare global {
+  interface Window {
+    __vixtInstallPrompt?: BeforeInstallPromptEvent;
+  }
+}
+
 /**
  * Botão de instalação PWA.
- * Captura o beforeinstallprompt do Chromium e chama prompt() dentro do clique
- * do usuário — única forma de instalar de fato no Android/Chrome.
- * Em navegadores sem suporte (iOS/Safari), exibe instruções passo a passo.
+ *
+ * O evento beforeinstallprompt é capturado por um script inline no <head>
+ * (antes da hidratação) e também aqui, para cobrir os dois cenários.
+ * O prompt() é chamado DENTRO do clique — exigência do Chrome.
  */
 export function PwaInstallButton({ label = "Instalar aplicativo" }: { label?: string }) {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
+  const deferredRef = useRef<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [platform] = useState<"android" | "ios" | "desktop" | "unknown">(() => {
@@ -28,13 +35,21 @@ export function PwaInstallButton({ label = "Instalar aplicativo" }: { label?: st
   });
 
   useEffect(() => {
+    // Pega o evento capturado cedo pelo script inline, se houver.
+    if (window.__vixtInstallPrompt) {
+      deferredRef.current = window.__vixtInstallPrompt;
+    }
+
     const onPrompt = (event: Event) => {
       event.preventDefault();
-      setDeferred(event as BeforeInstallPromptEvent);
+      const typed = event as BeforeInstallPromptEvent;
+      window.__vixtInstallPrompt = typed;
+      deferredRef.current = typed;
     };
     const onInstalled = () => {
       setInstalled(true);
-      setDeferred(null);
+      deferredRef.current = null;
+      window.__vixtInstallPrompt = undefined;
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
@@ -45,15 +60,21 @@ export function PwaInstallButton({ label = "Instalar aplicativo" }: { label?: st
   }, []);
 
   const install = useCallback(async () => {
-    if (!deferred) {
+    const prompt = deferredRef.current ?? window.__vixtInstallPrompt;
+    if (!prompt) {
       setShowHelp(true);
       return;
     }
-    await deferred.prompt();
-    const choice = await deferred.userChoice;
-    if (choice.outcome === "accepted") setInstalled(true);
-    setDeferred(null);
-  }, [deferred]);
+    try {
+      await prompt.prompt();
+      const choice = await prompt.userChoice;
+      if (choice.outcome === "accepted") setInstalled(true);
+    } catch {
+      setShowHelp(true);
+    }
+    deferredRef.current = null;
+    window.__vixtInstallPrompt = undefined;
+  }, []);
 
   if (installed) {
     return (
@@ -76,10 +97,10 @@ export function PwaInstallButton({ label = "Instalar aplicativo" }: { label?: st
       {showHelp && (
         <p className="mt-2 rounded-lg bg-[#f8fafc] p-3 text-xs leading-5 text-[#64748b]">
           {platform === "ios"
-            ? "No iPhone: toque no botão Compartilhar do Safari e escolha “Adicionar à Tela Inicial”."
+            ? "No iPhone: toque em Compartilhar no Safari e escolha “Adicionar à Tela Inicial”."
             : platform === "android"
               ? "Abra o menu do Chrome (⋮) e toque em “Instalar aplicativo” ou “Adicionar à tela inicial”."
-              : "No computador, use o ícone de instalação na barra de endereço do Chrome."}
+              : "Use o ícone de instalação na barra de endereço do Chrome."}
         </p>
       )}
     </div>

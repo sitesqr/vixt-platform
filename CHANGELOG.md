@@ -1,5 +1,17 @@
 # Changelog — VIXT Central
 
+## [0.3.5] — Correção do manifest e captura antecipada do prompt
+
+- Manifest com ícones `any` e `maskable` separados (safe zone), `id`, `dir`,
+  `display_override` e `categories` — critérios exigidos pelo Chrome.
+- Listener `beforeinstallprompt` registrado por script inline no `<head>`,
+  antes da hidratação, e espelhado no componente.
+- `prompt()` chamado dentro do clique do usuário (exigência do navegador).
+- Nota: navegadores **nunca** instalam apps silenciosamente — sempre exibem
+  uma confirmação ao usuário. O botão dispara essa confirmação.
+
+---
+
 ## [0.3.4] — Invalidação do cache PWA no celular
 
 - `sw.js` passou a `vixt-v2` e remove caches antigos (`vixt-v1`) no `activate`.
