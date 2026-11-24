@@ -15,6 +15,10 @@ const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 const adminPassword = process.env.ADMIN_PASSWORD;
 const adminName = process.env.ADMIN_NAME?.trim() || "Administrador VIXT";
 
+// Aplicativos mantidos no catálogo mas ainda não disponíveis ao público.
+// O seed nunca republica estes slugs — a publicação é feita pelo painel admin.
+const DEFERRED_SLUGS = new Set(["borracharia", "lava-rapido", "salao"]);
+
 const apps = [
   {
     slug: "oficina",
@@ -292,8 +296,13 @@ async function main() {
         advantages: app.advantages,
         platforms: app.platforms,
         accentColor: app.accentColor,
-        status: published ? AppStatus.AVAILABLE : AppStatus.DEVELOPMENT,
-        published,
+        // Respeita despublicações feitas pelo painel administrativo.
+        ...(DEFERRED_SLUGS.has(app.slug)
+          ? {}
+          : {
+              status: published ? AppStatus.AVAILABLE : AppStatus.DEVELOPMENT,
+              published,
+            }),
       },
     });
 
