@@ -1,5 +1,15 @@
 # Changelog — VIXT Central
 
+## [0.3.4] — Invalidação do cache PWA no celular
+
+- `sw.js` passou a `vixt-v2` e remove caches antigos (`vixt-v1`) no `activate`.
+- Páginas usam network-first (sempre buscam versão nova; cache só offline).
+- `PwaRegister` força `registration.update()` e recarrega uma vez quando há
+  service worker novo — elimina a tela antiga com link de APK no celular.
+- Confirmado: apenas a branch `master` existe (sem `main`).
+
+---
+
 ## [0.3.3] — Instalação PWA real
 
 - Botão PWA deixou de ser um link e passou a ser um `<button>` que captura
