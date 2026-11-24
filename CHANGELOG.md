@@ -1,5 +1,32 @@
 # Changelog — VIXT Central
 
+## [0.2.1] — APK de demonstração Android (VIXT Oficina)
+
+### Adicionado
+
+- APK real gerado com Capacitor 7 + Android SDK 35 + JDK 21:
+  `mobile/artifacts/vixt-oficina-1.0.0-demo.apk` (não versionado).
+- Rota `GET /api/public/downloads/[file]` (allowlist) para servir o APK local.
+- Distribuição `ANDROID/AVAILABLE` cadastrada com URL + SHA-256 + tamanho reais.
+- Botão "Baixar para Android" substituiu "Em breve" na página da Oficina.
+- Scripts `npm run apk:demo` / `npm run sha` em `mobile/package.json`.
+
+### Decisões
+
+- APK **debug assinado**, finalidade demonstração — não é build de produção,
+  não usa keystore definitivo e não foi publicado na Play Store.
+- URL `http://10.0.2.2:3000` (host do emulador) + `usesCleartextTraffic` apenas
+  na demonstração; produção exigirá HTTPS.
+- O `.apk` e o projeto Gradle gerado ficam fora do Git via `mobile/.gitignore`.
+
+### Validado
+
+- `apksigner verify` (v1/v2) ✅ · `aapt dump badging` ✅
+- Download HTTP 200 com SHA-256 idêntico ao original ✅
+- Redirect registra evento `DOWNLOAD` ✅
+
+---
+
 ## [0.2.0] — Distribuição Desktop (Windows) e preparação Android
 
 ### Adicionado

@@ -12,7 +12,7 @@ continuam os mesmos.
 |---|---|---|
 | Web | ✅ Funcionando (inalterado) | `LINK_<APP>_WEB` / painel admin |
 | Desktop Windows | 🛠️ Estrutura pronta; **nenhum `.exe` gerado ainda** | `desktop/` + workflow manual |
-| Android | 📋 Preparação estrutural; **sem build, sem Play Store** | `mobile/` |
+| Android | ✅ APK de demonstração da **VIXT Oficina** gerado e disponível; sem Play Store | `mobile/` |
 
 **Regra de ouro:** nenhum botão de download aparece sem um binário real,
 compilado, testado e com URL + SHA-256 válidos.
@@ -151,21 +151,24 @@ inalterada.
 
 ---
 
-## 6. O que falta para publicar Android
+## 6. Android — demonstração já disponível
 
-Tudo está documentado em [`mobile/docs/ANDROID.md`](./mobile/docs/ANDROID.md).
-Resumo:
+Foi gerado um **APK de demonstração da VIXT Oficina** (4.052.194 bytes,
+SHA-256 `d5fbb042…7053e`), assinado com certificado debug, que abre a página
+real do aplicativo via WebView. Ele está cadastrado no catálogo com o botão
+**"Baixar para Android"**. Barbearia segue com "Android — Em breve".
 
-1. Substituir a URL real no `capacitor.config.json`.
-2. Gerar build web de produção do aplicativo.
-3. `npx cap add android` + `npx cap sync android`.
-4. Gerar APK **assinado** com keystore da VIXT.
-5. Testar em dispositivo real.
-6. Cadastrar `LINK_<APP>_ANDROID` + SHA-256 e rodar o seed.
-7. Só então criar listing na Google Play Console.
+Detalhes completos em [`mobile/docs/ANDROID.md`](./mobile/docs/ANDROID.md).
 
-**Nada disso foi feito.** Não há APK, não há conta Google Play configurada e
-nenhum botão Android clicável foi exposto.
+### O que ainda falta para a Play Store
+
+1. URL HTTPS real do aplicativo (remover `cleartext`).
+2. Keystore de assinatura definitivo da VIXT + build release.
+3. Ícone adaptativo, splash e testes em dispositivo físico.
+4. Política de privacidade/termos dentro do app.
+5. Conta Google Play Console, listing e upload do AAB.
+
+**Nada disso foi feito** — nenhum app foi publicado na Play Store.
 
 ---
 

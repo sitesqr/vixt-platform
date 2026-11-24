@@ -1,43 +1,65 @@
-# Android — preparação estrutural (não implementado)
+# Android — demonstração funcional (VIXT Oficina)
 
-Esta pasta existe apenas para **preparar** a futura versão Android dos
-aplicativos VIXT. Nenhum APK foi gerado, nenhum projeto Android foi criado e
-nada será publicado na Google Play Store nesta etapa.
+## Estado atual
 
-## Tecnologia escolhida: Capacitor
+✅ **APK de demonstração gerado e validado.**
 
-Os aplicativos são Next.js/React web. Capacitor permite reutilizar esse código
-em um WebView nativo Android, com acesso a recursos do dispositivo quando
-necessário — sem reconstruir os aplicativos.
+| Item | Valor |
+|---|---|
+| Arquivo | `mobile/artifacts/vixt-oficina-1.0.0-demo.apk` (copiado de `android/app/build/outputs/apk/debug/`) |
+| Tamanho | 4.052.194 bytes (~3,9 MB) |
+| SHA-256 | `d5fbb0427784c2037871f471a454568edc53d861a5086197d389d1f11597053e` |
+| Pacote | `br.com.vixt.oficina.demo` |
+| Versão | 1.0 (versionCode 1) |
+| Assinatura | Debug (v1 + v2), **não é assinatura de produção** |
+| URL no app | `http://10.0.2.2:3000/aplicativos/oficina` (host do emulador) |
+| Play Store | ❌ Não publicado |
 
-## Por que ainda não há build
+> Este APK é uma **demonstração técnica**: ele abre a página real da VIXT
+> Oficina dentro de uma WebView nativa. Não é uma versão de produção, não usa
+> keystore definitivo e não será enviado à Google Play.
 
-1. As URLs reais dos aplicativos não foram fornecidas (`SUBSTITUA-...`).
-2. Nenhum APK foi compilado e testado.
-3. A regra da plataforma é não apresentar como disponível o que não existe.
+## Como foi gerado
 
-## Como será quando autorizado
+1. Android SDK command-line tools + plataforma 35 + build-tools 35 instalados
+   em `/tmp/opencode/android-sdk` (fora do repositório).
+2. JDK 21 (Temurin) em `/tmp/opencode/jdk21` — Capacitor 7 exige Java 21.
+3. `npm install` em `mobile/` (Capacitor 7.6.10).
+4. `capacitor.config.json` aponta para `http://10.0.2.2:3000`.
+5. `android:usesCleartextTraffic="true"` no AndroidManifest para permitir http
+   na demonstração.
+6. `npx cap add android` → `./gradlew assembleDebug`.
+
+## Como reproduzir
 
 ```bash
+# pré-requisitos: JDK 21 e Android SDK 35
+export JAVA_HOME=/caminho/para/jdk-21
+export ANDROID_HOME=/caminho/para/android-sdk
+
 cd mobile
 npm install
-cp capacitor.config.example.json capacitor.config.json
-# editar appId, appName e server.url com a URL real
-npx cap add android
-npm run build:android     # após implementar o build do app web
-npx cap sync android
+npm run apk:demo
 ```
 
-Depois: gerar APK assinado, testar em dispositivo real, e somente então
-cadastrar a distribuição `ANDROID` no painel admin da VIXT Central.
+## Como está disponível na VIXT
 
-## Checklist antes de publicar
+O botão **"Baixar para Android"** aparece na página da VIXT Oficina e aponta
+para `/api/public/downloads/vixt-oficina-1.0.0-demo.apk`, que serve o arquivo
+com `Content-Type: application/vnd.android.package-archive`.
 
-- [ ] URL real do aplicativo definida
-- [ ] Build web de produção funcionando
-- [ ] APK assinado com keystore próprio da VIXT
-- [ ] Teste em dispositivo Android real
-- [ ] Ícone e splash screen definitivos
-- [ ] Política de privacidade e termos no app
-- [ ] Conta Google Play Console e listing
-- [ ] Cadastro da distribuição no admin (platform `ANDROID`, `PLAY_STORE`)
+O cadastro foi feito com `npm run db:seed:distributions`, usando URL + SHA-256
++ tamanho reais — nenhum link fictício.
+
+Barbearia continua exibindo **"Android — Em breve"** (sem APK).
+
+## O que ainda falta para produção / Play Store
+
+- [ ] URL HTTPS real do aplicativo (remover cleartext).
+- [ ] Keystore de assinatura definitivo da VIXT (não o debug).
+- [ ] `./gradlew assembleRelease` assinado.
+- [ ] Ícone adaptativo e splash screen definitivos.
+- [ ] Teste em dispositivo físico.
+- [ ] Política de privacidade e termos dentro do app.
+- [ ] Conta Google Play Console + listing + upload do AAB.
+- [ ] Cadastro da distribuição `PLAY_STORE` no painel admin.

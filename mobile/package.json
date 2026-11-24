@@ -1,15 +1,18 @@
 {
   "name": "vixt-mobile",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Preparação estrutural para versões Android dos aplicativos VIXT via Capacitor. Nenhum build ou publicação habilitada.",
+  "description": "Versão Android (demonstração) da VIXT Oficina via Capacitor. Sem publicação na Play Store.",
   "scripts": {
-    "sync:oficina": "echo ' configure a URL real antes de sincronizar' && exit 1",
-    "build:android": "echo 'Android ainda nao implementado — veja mobile/docs/ANDROID.md' && exit 1"
+    "sync": "npx cap sync android",
+    "build:android": "cd android && ./gradlew assembleDebug --no-daemon",
+    "build:release": "cd android && ./gradlew assembleRelease --no-daemon",
+    "apk:demo": "npm run sync && npm run build:android",
+    "sha": "sha256sum artifacts/vixt-oficina-1.0.0-demo.apk"
   },
   "devDependencies": {
+    "@capacitor/android": "^7.0.0",
     "@capacitor/cli": "^7.0.0",
-    "@capacitor/core": "^7.0.0",
-    "@capacitor/android": "^7.0.0"
+    "@capacitor/core": "^7.0.0"
   }
 }
