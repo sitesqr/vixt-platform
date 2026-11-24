@@ -72,7 +72,10 @@ function toButtons(
 }
 
 export function groupDistributions(buttons: DistributionButton[]): DistributionGroup {
-  const web = buttons.filter((b) => b.platform === "WEB" && b.url);
+  // PWA também é uma opção web (instalável pelo navegador, sem APK).
+  const web = buttons.filter(
+    (b) => (b.platform === "WEB" || b.type === "PWA") && b.url,
+  );
   const desktop = buttons.filter(
     (b) => ["WINDOWS", "MACOS", "LINUX"].includes(b.platform) && b.url,
   );

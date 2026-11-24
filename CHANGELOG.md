@@ -1,5 +1,16 @@
 # Changelog — VIXT Central
 
+## [0.3.2] — PWA no lugar de APK (remove aviso do Android)
+
+- Distribuições `ANDROID/APK` removidas do catálogo de produção.
+- VIXT Central passou a ser PWA: `manifest.webmanifest`, `sw.js`,
+  ícones 192/512, registro via `PwaRegister` e metadados no layout.
+- Cadastrada distribuição `PWA` ("Instalar aplicativo (PWA)") para Oficina e
+  Barbearia, agrupada na seção Web.
+- Nenhum aviso do Google Play Protect: instalação ocorre pelo navegador.
+
+---
+
 ## [0.3.1] — APKs release assinados (correção do aviso do Android)
 
 - Keystore de release próprio VIXT (`CN=VIXT`), configurado no Gradle via

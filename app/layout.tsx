@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { PwaRegister } from "@/components/layout/pwa-register";
 import "./globals.css";
 
 const vixtFont = Plus_Jakarta_Sans({
@@ -19,6 +20,12 @@ export const metadata: Metadata = {
   description:
     "Ecossistema VIXT: aplicativos gratuitos para pessoais, profissionais e empresas. Conheça, baixe e use sem cadastro ou assinatura.",
   applicationName: "VIXT",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "VIXT",
+    statusBarStyle: "default",
+  },
   keywords: [
     "VIXT",
     "aplicativos gratuitos",
@@ -60,7 +67,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={vixtFont.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <PwaRegister />
+      </body>
     </html>
   );
 }

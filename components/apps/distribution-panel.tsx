@@ -43,7 +43,10 @@ function formatSize(bytes: string | null): string | null {
 }
 
 function ActiveButton({ button }: { button: DistributionButton }) {
-  const Icon = platformMeta[button.platform]?.icon ?? Download;
+  const Icon =
+    button.type === "PWA"
+      ? Monitor
+      : (platformMeta[button.platform]?.icon ?? Download);
   const size = formatSize(button.fileSizeBytes);
 
   return (
