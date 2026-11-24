@@ -1,38 +1,23 @@
 import { NextResponse } from "next/server";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { apiError } from "@/lib/api-response";
 
 /**
- * Serve artefatos de demonstração (APK) armazenados em mobile/artifacts.
- * Em produção, as URLs de distribuição devem apontar para CDN/Storage real —
- * esta rota existe apenas para validar o fluxo local de download.
+ * Distribuição via APK foi descontinuada: o Android exibe o aviso do Google
+ * Play Protect para sideload. Os aplicativos agora são instalados como PWA.
+ *Esta rota retorna 410 (Gone) para qualquer arquivo, inclusive links antigos.
  */
 export const dynamic = "force-dynamic";
 
-const ALLOWED = new Set([
-  "vixt-oficina-1.0.0-demo.apk",
-  "vixt-barbearia-1.0.0-demo.apk",
-]);
-
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ file: string }> },
-) {
-  const { file } = await params;
-  if (!ALLOWED.has(file)) {
-    return apiError("NOT_FOUND", "Arquivo não encontrado.", 404);
-  }
-
-  const filePath = path.join(process.cwd(), "mobile", "artifacts", file);
-  const bytes = await readFile(filePath);
-
-  return new NextResponse(new Uint8Array(bytes), {
-    headers: {
-      "Content-Type": "application/vnd.android.package-archive",
-      "Content-Disposition": `attachment; filename="${file}"`,
-      "Content-Length": String(bytes.length),
-      "Cache-Control": "public, max-age=3600",
+export async function GET() {
+  return NextResponse.json(
+    {
+      ok: false,
+      error: {
+        code: "GONE",
+        message:
+          "Downloads APK foram descontinuados. Instale o aplicativo como PWA pelo navegador.",
+      },
     },
-  });
+    { status: 410 },
+  );
 }
