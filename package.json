@@ -49,5 +49,8 @@
   "overrides": {
     "effect": "3.22.5",
     "deepmerge-ts": "8.0.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
