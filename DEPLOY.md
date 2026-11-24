@@ -1,7 +1,8 @@
 # Deploy — VIXT Central (Render)
 
-> ⚠️ **Nenhum deploy em produção foi executado.** Este documento é o plano
-> aprovado para execução futura, mediante autorização.
+> ✅ **Deploy executado em 24/11/2026** (mediante autorização): Render free +
+> Neon. URL pública: **https://vixt-central.onrender.com**.
+> Credenciais ficam apenas no painel do Render / Neon — nunca no repositório.
 
 ## Pré-requisitos
 

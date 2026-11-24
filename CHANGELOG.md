@@ -1,5 +1,20 @@
 # Changelog — VIXT Central
 
+## [0.3.0] — Deploy em produção (Render free + Neon)
+
+- Web Service `vixt-central` no Render (plano free, região Oregon).
+- Banco PostgreSQL independente no Neon (`vixt-central`, região aws-us-east-1),
+  com as 2 migrations aplicadas.
+- Seed de produção: admin, 2 aplicativos publicados com URLs reais dos sistemas
+  existentes e 2 distribuições Android apontando para o próprio Render.
+- APKs de demonstração passaram a ser versionados para que os downloads
+  funcionem no deploy.
+- Seed corrigido para nunca criar links `localhost` em produção.
+
+**Credenciais de produção não são versionadas** e estão no painel do Render.
+
+---
+
 ## [0.2.2] — APK de demonstração Android (VIXT Barbearia)
 
 - Segundo APK real gerado via Capacitor: `vixt-barbearia-1.0.0-demo.apk`

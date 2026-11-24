@@ -260,7 +260,10 @@ async function main() {
   // Aplicativos — publicados somente se houver link real configurado.
   for (const app of apps) {
     const link = process.env[app.distributionEnv]?.trim();
-    const published = Boolean(link && link.startsWith("http"));
+    // Nunca publicar links locais em produção.
+    const isLocal = Boolean(link && link.includes("localhost"));
+    const validLink = Boolean(link && link.startsWith("http") && !isLocal);
+    const published = validLink;
 
     const row = await prisma.application.upsert({
       where: { slug: app.slug },
@@ -306,7 +309,7 @@ async function main() {
       },
     });
 
-    if (link && link.startsWith("http")) {
+    if (validLink && link) {
       const existingLink = await prisma.distribution.findFirst({
         where: { applicationId: row.id, url: link },
       });
@@ -315,6 +318,7 @@ async function main() {
           data: {
             applicationId: row.id,
             type: app.distributionType,
+            platform: "WEB",
             label: "Acessar versão web",
             url: link,
             active: true,

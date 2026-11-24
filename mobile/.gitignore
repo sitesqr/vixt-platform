@@ -3,5 +3,6 @@ android/.gradle/
 android/build/
 android/app/build/
 android/local.properties
-artifacts/*.apk
+# APKs de demonstração são versionados para que os downloads funcionem
+# no deploy (são artefatos públicos de demonstração, não segredos).
 *.keystore
