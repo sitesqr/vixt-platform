@@ -1,5 +1,15 @@
 # Changelog — VIXT Central
 
+## [0.3.3] — Instalação PWA real
+
+- Botão PWA deixou de ser um link e passou a ser um `<button>` que captura
+  `beforeinstallprompt` e chama `prompt()` no clique (instala de fato no Chrome).
+- Fallback com instruções para iOS e navegadores sem suporte.
+- Estado "Aplicativo instalado" após `appinstalled`.
+- Validado em produção: HTML contém `<button type="button">`.
+
+---
+
 ## [0.3.2] — PWA no lugar de APK (remove aviso do Android)
 
 - Distribuições `ANDROID/APK` removidas do catálogo de produção.

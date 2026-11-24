@@ -14,9 +14,11 @@ sideload e sem aviso de segurança.
 ## Como funciona agora
 
 - A VIXT Central tem `manifest.webmanifest`, `sw.js` e ícones 192/512.
-- O visitante Android abre o aplicativo no Chrome e usa **"Adicionar à tela inicial"**
-  (menu do navegador → Instalar aplicativo).
-- O catálogo exibe **"Instalar aplicativo (PWA)"** na página de cada app.
+- O catálogo exibe um **botão "Instalar aplicativo (PWA)"**.
+- Ao clicar, o componente captura o evento `beforeinstallprompt` do Chrome e
+  chama `prompt()` **dentro do clique do usuário** — o que instala de fato.
+- Se o navegador não oferecer o prompt (iOS/Safari), o botão mostra instruções
+  para "Adicionar à Tela Inicial".
 - Nenhum download de `.apk` é oferecido — logo, nenhum aviso do Play Protect.
 
 ## Distribuição no banco
