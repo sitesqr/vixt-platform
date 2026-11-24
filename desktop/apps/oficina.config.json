@@ -1,0 +1,12 @@
+{
+  "slug": "oficina",
+  "windowTitle": "VIXT Oficina",
+  "startUrl": "https://SUBSTITUA-PELA-URL-REAL-DA-OFICINA.example.com",
+  "allowedOrigins": [
+    "https://SUBSTITUA-PELA-URL-REAL-DA-OFICINA.example.com"
+  ],
+  "icon": "vixt-oficina.ico",
+  "window": { "width": 1280, "height": 820 },
+  "updateFeedUrl": "https://github.com/sitesqr/vixt-platform/releases/latest/download/oficina-latest.yml",
+  "_comment": "Substitua startUrl/allowedOrigins pela URL real antes de gerar o .exe. Nenhum instalador é publicado sem essa substituição e sem teste."
+}

@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Download,
-  ExternalLink,
-  Globe,
-  Monitor,
-  Smartphone,
-  Wrench,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { DistributionPanel } from "@/components/apps/distribution-panel";
 import { applicationsService } from "@/modules/applications";
 import { safePublicQuery } from "@/lib/safe-data";
 import { trackEvent, hashSession, newSessionId } from "@/lib/analytics";
@@ -36,15 +28,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
-
-const typeIcon: Record<string, typeof Globe> = {
-  WEB: Globe,
-  PLAY_STORE: Smartphone,
-  APK: Download,
-  PWA: Monitor,
-  DESKTOP: Monitor,
-  OTHER: ExternalLink,
-};
 
 export default async function AppDetailPage({ params }: Props) {
   const { slug } = await params;
@@ -166,26 +149,7 @@ export default async function AppDetailPage({ params }: Props) {
 
             <aside className="vixt-card sticky top-24 p-6">
               <p className="text-xs font-bold tracking-wide text-[#64748b] uppercase">Distribuição</p>
-              <div className="mt-4 space-y-2">
-                {app.distributions.length ? (
-                  app.distributions.map((d) => {
-                    const Icon = typeIcon[d.type] ?? ExternalLink;
-                    return (
-                      <a
-                        key={d.id}
-                        href={`/api/public/redirect/${d.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="flex h-12 items-center gap-3 rounded-xl bg-[#eff6ff] px-4 text-sm font-bold text-[#1d4ed8] transition-colors hover:bg-[#dbeafe]"
-                      >
-                        <Icon size={18} /> {d.label}
-                      </a>
-                    );
-                  })
-                ) : (
-                  <p className="text-sm text-[#94a3b8]">Nenhum link de distribuição ativo.</p>
-                )}
-              </div>
+              <DistributionPanel groups={app.distributionGroups} />
 
               {app.platforms.length > 0 && (
                 <div className="mt-6 border-t border-[#e2e8f0] pt-5">

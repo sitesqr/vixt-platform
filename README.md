@@ -20,6 +20,10 @@ administrativo protegido.
   suporte e botões de distribuição **somente quando há link ativo válido**.
 - Sistema de distribuição: WEB, PLAY_STORE, APK, PWA, DESKTOP, OTHER —
   um app pode ter vários links; redirecionamento passa sempre pelo backend.
+- **Desktop Windows**: wrapper Electron pronto (ícone próprio, janela
+  independente, auto-update estruturado) — ver [DISTRIBUTION.md](./DISTRIBUTION.md).
+  Nenhum `.exe` é publicado sem build e teste reais.
+- **Android**: preparação estrutural com Capacitor, sem build ou Play Store.
 - Controle de versões com changelog e status de publicação.
 - Estatísticas de VIEW / CLICK / DOWNLOAD sem login e sem IP bruto persistido.
 - Painel administrativo em `/admin` com login Argon2id + JWT em cookie HttpOnly,

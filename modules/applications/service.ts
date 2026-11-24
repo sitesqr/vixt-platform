@@ -8,8 +8,13 @@ import type {
   CatalogResult,
   CreateApplicationInput,
   DistributionButton,
+  DistributionGroup,
   UpdateApplicationInput,
 } from "./types";
+import type {
+  DistributionAvailability,
+  DistributionPlatform,
+} from "@prisma/client";
 
 const NEW_DAYS = 30;
 const UPDATED_DAYS = 45;
@@ -33,20 +38,55 @@ function toButtons(
     id: string;
     label: string;
     type: string;
+    platform: DistributionPlatform;
+    availability: DistributionAvailability;
     url: string;
+    fileName: string | null;
+    fileSizeBytes: bigint | null;
+    checksumSha256: string | null;
+    notes: string | null;
     trackDownload: boolean;
     active: boolean;
   }[],
 ): DistributionButton[] {
   return distributions
-    .filter((d) => d.active && d.url.startsWith("http"))
-    .map((d) => ({
-      id: d.id,
-      label: d.label,
-      type: d.type,
-      url: d.url,
-      trackDownload: d.trackDownload,
-    }));
+    .filter((d) => d.active)
+    .map((d) => {
+      const comingSoon = d.availability === "COMING_SOON";
+      const hasValidUrl = d.url.startsWith("http");
+      return {
+        id: d.id,
+        label: d.label,
+        type: d.type,
+        platform: d.platform,
+        availability: d.availability,
+        // Nunca expomos URL de item "Em breve" — não existe download real.
+        url: comingSoon || !hasValidUrl ? null : d.url,
+        fileName: d.fileName,
+        fileSizeBytes: d.fileSizeBytes?.toString() ?? null,
+        checksumSha256: d.checksumSha256,
+        notes: d.notes,
+        trackDownload: d.trackDownload,
+      };
+    });
+}
+
+export function groupDistributions(buttons: DistributionButton[]): DistributionGroup {
+  const web = buttons.filter((b) => b.platform === "WEB" && b.url);
+  const desktop = buttons.filter(
+    (b) => ["WINDOWS", "MACOS", "LINUX"].includes(b.platform) && b.url,
+  );
+  const mobile = buttons.filter(
+    (b) => ["ANDROID", "PLAY_STORE"].includes(b.platform) && b.url,
+  );
+  const comingSoon = [
+    ...new Set(
+      buttons
+        .filter((b) => b.availability === "COMING_SOON")
+        .map((b) => b.platform),
+    ),
+  ];
+  return { web, desktop, mobile, comingSoon };
 }
 
 export const applicationsService = {
@@ -69,6 +109,16 @@ export const applicationsService = {
     if (!app) return null;
 
     const summary = toSummary(app);
+
+    // Botões gerais + botões das versões publicadas, sem duplicatas por id.
+    const seen = new Set<string>();
+    const allButtons = [
+      ...toButtons(app.distributions),
+      ...app.versions
+        .filter((v) => v.status === "PUBLISHED")
+        .flatMap((v) => toButtons(v.distributions)),
+    ].filter((b) => (seen.has(b.id) ? false : (seen.add(b.id), true)));
+
     const versionsWithButtons = app.versions.map((v) => ({
       version: v.version,
       changelog: v.changelog,
@@ -99,14 +149,9 @@ export const applicationsService = {
         kind: i.kind,
       })),
       versions: versionsWithButtons,
-      // Botões gerais + os da última versão publicada, sem duplicatas.
-      distributions: (() => {
-        const seen = new Set<string>();
-        return [...toButtons(app.distributions), ...versionsWithButtons
-          .filter((v) => v.status === "PUBLISHED")
-          .flatMap((v) => v.distributions)]
-          .filter((b) => (seen.has(b.id) ? false : (seen.add(b.id), true)));
-      })(),
+      // Botões gerais + os da versão publicada, sem duplicatas.
+      distributions: allButtons,
+      distributionGroups: groupDistributions(allButtons),
     };
   },
 

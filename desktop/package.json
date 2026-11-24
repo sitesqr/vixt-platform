@@ -1,0 +1,18 @@
+{
+  "name": "vixt-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wrappers desktop (Electron) para os aplicativos web da VIXT. Não modifica os aplicativos existentes.",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "APP_SLUG=oficina electron .",
+    "dist:oficina": "electron-builder --win --config apps/oficina.builder.json",
+    "dist:barbearia": "electron-builder --win --config apps/barbearia.builder.json",
+    "dist:all": "npm run dist:oficina && npm run dist:barbearia",
+    "pack": "electron-builder --dir --config apps/oficina.builder.json"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  }
+}

@@ -13,6 +13,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:distributions": "tsx prisma/seed-distributions.ts",
     "db:dev": "prisma migrate dev"
   },
   "dependencies": {

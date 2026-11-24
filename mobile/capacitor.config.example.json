@@ -1,0 +1,15 @@
+{
+  "appId": "br.com.vixt.oficina",
+  "appName": "VIXT Oficina",
+  "webDir": "out",
+  "server": {
+    "url": "https://SUBSTITUA-PELA-URL-REAL-DO-APP.example.com",
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true
+    }
+  },
+  "_comment": "EXEMPLO — copie para capacitor.config.json e substitua a URL real quando a implementação Android for autorizada. Nenhum build é feito agora."
+}

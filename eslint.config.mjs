@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Wrapper Electron e preparação mobile têm configurações próprias.
+    "desktop/**",
+    "mobile/**",
   ]),
 ]);
 

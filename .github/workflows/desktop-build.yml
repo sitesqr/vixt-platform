@@ -1,0 +1,75 @@
+name: VIXT Desktop — gerar instaladores Windows
+
+# Workflow manual: só gera .exe quando explicitamente disparado.
+# NUNCA publica automaticamente na VIXT Central — a publicação é feita pelo painel admin
+# após o binário ser baixado, testado e hospedado.
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "Aplicativo para empacotar"
+        required: true
+        type: choice
+        options:
+          - oficina
+          - barbearia
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependências do wrapper
+        working-directory: desktop
+        run: npm install
+
+      - name: Gerar ícones
+        working-directory: desktop/build
+        run: python make-icons.py
+
+      - name: Validar URL configurada
+        shell: pwsh
+        env:
+          APP_SLUG: ${{ inputs.app }}
+        run: |
+          $config = Get-Content "desktop/apps/$env:APP_SLUG.config.json" -Raw | ConvertFrom-Json
+          if ($config.startUrl -like "*SUBSTITUA*") {
+            throw "startUrl não configurado. Substitua a URL real em desktop/apps/$env:APP_SLUG.config.json antes de gerar o instalador."
+          }
+          Write-Host "URL validada: $($config.startUrl)"
+
+      - name: Compilar instalador .exe
+        working-directory: desktop
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run dist:${{ inputs.app }}
+
+      - name: Calcular SHA-256 e tamanho
+        shell: pwsh
+        env:
+          APP_SLUG: ${{ inputs.app }}
+        run: |
+          $exe = Get-ChildItem "desktop/dist/$env:APP_SLUG/*.exe" | Select-Object -First 1
+          if (-not $exe) { throw "Nenhum .exe gerado." }
+          $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLower()
+          $size = $exe.Length
+          Write-Host "ARQUIVO=$($exe.Name)"
+          Write-Host "SHA256=$hash"
+          Write-Host "TAMANHO_BYTES=$size"
+          "SHA256=$hash" >> $env:GITHUB_ENV
+          "TAMANHO_BYTES=$size" >> $env:GITHUB_ENV
+          "ARQUIVO=$($exe.Name)" >> $env:GITHUB_ENV
+
+      - name: Enviar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: vixt-${{ inputs.app }}-windows
+          path: desktop/dist/${{ inputs.app }}/**/*.exe
+          retention-days: 30

@@ -1,0 +1,15 @@
+{
+  "name": "vixt-mobile",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Preparação estrutural para versões Android dos aplicativos VIXT via Capacitor. Nenhum build ou publicação habilitada.",
+  "scripts": {
+    "sync:oficina": "echo ' configure a URL real antes de sincronizar' && exit 1",
+    "build:android": "echo 'Android ainda nao implementado — veja mobile/docs/ANDROID.md' && exit 1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/android": "^7.0.0"
+  }
+}

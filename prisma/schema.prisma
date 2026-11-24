@@ -256,25 +256,46 @@ enum DistributionType {
   OTHER
 }
 
+enum DistributionPlatform {
+  WEB
+  WINDOWS
+  ANDROID
+  MACOS
+  LINUX
+  OTHER
+}
+
+enum DistributionAvailability {
+  AVAILABLE
+  COMING_SOON
+}
+
 model Distribution {
-  id            String           @id @default(uuid()) @db.Uuid
-  applicationId String           @db.Uuid
-  application   Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  versionId     String?          @db.Uuid
-  version       AppVersion?      @relation(fields: [versionId], references: [id], onDelete: SetNull)
-  type          DistributionType
-  label         String           @db.VarChar(120)
-  url           String           @db.VarChar(800)
-  active        Boolean          @default(true)
+  id             String                   @id @default(uuid()) @db.Uuid
+  applicationId  String                   @db.Uuid
+  application    Application              @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  versionId      String?                  @db.Uuid
+  version        AppVersion?              @relation(fields: [versionId], references: [id], onDelete: SetNull)
+  type           DistributionType
+  platform       DistributionPlatform     @default(WEB)
+  availability   DistributionAvailability @default(AVAILABLE)
+  label          String                   @db.VarChar(120)
+  url            String                   @db.VarChar(800)
+  fileName       String?                  @db.VarChar(200)
+  fileSizeBytes  BigInt?                  @db.BigInt
+  checksumSha256 String?                  @db.VarChar(64)
+  notes          String?                  @db.Text
+  active         Boolean                  @default(true)
   // Quando false, cliques são contabilizados como CLICK e não como DOWNLOAD confirmado.
-  trackDownload Boolean          @default(true)
-  sortOrder     Int              @default(0)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  analytics     AnalyticsEvent[]
+  trackDownload  Boolean                  @default(true)
+  sortOrder      Int                      @default(0)
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  analytics      AnalyticsEvent[]
 
   @@index([applicationId, active])
   @@index([versionId])
+  @@index([applicationId, platform, availability])
   @@map("distributions")
 }
 

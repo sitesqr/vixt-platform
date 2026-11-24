@@ -1,5 +1,45 @@
 # Changelog — VIXT Central
 
+## [0.2.0] — Distribuição Desktop (Windows) e preparação Android
+
+### Adicionado
+
+- Migration incremental `20261124000000_distribution_platforms` com
+  `platform`, `availability`, `fileName`, `fileSizeBytes`, `checksumSha256`,
+  `notes` e índice composto em `distributions`.
+- `DistributionPanel` na página do aplicativo: grupos **Web**, **Desktop**,
+  **Mobile** e **Próximas versões** ("Em breve" sem link clicável).
+- Wrapper Electron em `desktop/`: janela independente, ícone próprio por app,
+  origens permitidas, auto-update estruturado (desativado até release real).
+- Ícones `.ico` reais gerados por `desktop/build/make-icons.py`.
+- Workflow `.github/workflows/desktop-build.yml` (manual, `windows-latest`)
+  que valida a URL antes de compilar e faz upload do artefato.
+- Preparação Capacitor em `mobile/` — sem build, sem Play Store.
+- `prisma/seed-distributions.ts`: cadastra apenas binários com URL http(s) e
+  SHA-256 válido; nunca cria links fictícios.
+- `DISTRIBUTION.md` com processo completo de build e publicação.
+
+### Decisões
+
+- **Electron em vez de Tauri**: ambiente sem Rust/cross-compile Windows e apps
+  são web (Next.js). O wrapper aponta para a URL existente — nenhum aplicativo
+  ou banco externo foi modificado.
+- **Nenhum `.exe` gerado nesta entrega**: as URLs reais não foram fornecidas;
+  o workflow falha de propósito enquanto o config contém `SUBSTITUA`.
+- **"Android — Em breve" é informativo**: `availability=COMING_SOON` nunca
+  produz URL clicável.
+
+### Validado
+
+- Migration aplicada em PostgreSQL local ✅
+- Seed de distribuições: sem env → nenhum link; com `ANNOUNCE_ANDROID_COMING_SOON`
+  → apenas "Em breve" ✅
+- API `/api/public/applications/oficina` retorna `distributionGroups` ✅
+- Página renderiza Web + Android "Em breve" ✅
+- typecheck, 15 testes, build e lint ✅
+
+---
+
 ## [0.1.0] — Fase 1 (Fundação) + estrutura das Fases 2 e 3
 
 ### Adicionado
