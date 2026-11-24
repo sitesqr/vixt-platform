@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "br.com.vixt.oficina.demo"
+    namespace "br.com.vixt.barbearia.demo"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "br.com.vixt.oficina.demo"
+        applicationId "br.com.vixt.barbearia.demo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

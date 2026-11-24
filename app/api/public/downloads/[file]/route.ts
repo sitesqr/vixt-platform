@@ -10,7 +10,10 @@ import { apiError } from "@/lib/api-response";
  */
 export const dynamic = "force-dynamic";
 
-const ALLOWED = new Set(["vixt-oficina-1.0.0-demo.apk"]);
+const ALLOWED = new Set([
+  "vixt-oficina-1.0.0-demo.apk",
+  "vixt-barbearia-1.0.0-demo.apk",
+]);
 
 export async function GET(
   _request: Request,

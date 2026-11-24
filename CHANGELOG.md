@@ -1,5 +1,16 @@
 # Changelog — VIXT Central
 
+## [0.2.2] — APK de demonstração Android (VIXT Barbearia)
+
+- Segundo APK real gerado via Capacitor: `vixt-barbearia-1.0.0-demo.apk`
+  (4.339.895 B, SHA-256 `190420b8…71bba`, pacote `br.com.vixt.barbearia.demo`).
+- Label/appId/namespace ajustados para Barbearia antes do build.
+- Rota de download atualizada com o novo arquivo na allowlist.
+- "Android — Em breve" substituído por "Baixar para Android" na Barbearia.
+- Download validado (HTTP 200, SHA-256 idêntico) e registro de evento OK.
+
+---
+
 ## [0.2.1] — APK de demonstração Android (VIXT Oficina)
 
 ### Adicionado

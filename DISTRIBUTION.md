@@ -12,7 +12,7 @@ continuam os mesmos.
 |---|---|---|
 | Web | ✅ Funcionando (inalterado) | `LINK_<APP>_WEB` / painel admin |
 | Desktop Windows | 🛠️ Estrutura pronta; **nenhum `.exe` gerado ainda** | `desktop/` + workflow manual |
-| Android | ✅ APK de demonstração da **VIXT Oficina** gerado e disponível; sem Play Store | `mobile/` |
+| Android | ✅ APKs de demonstração de **Oficina** e **Barbearia** disponíveis; sem Play Store | `mobile/` |
 
 **Regra de ouro:** nenhum botão de download aparece sem um binário real,
 compilado, testado e com URL + SHA-256 válidos.
@@ -153,10 +153,14 @@ inalterada.
 
 ## 6. Android — demonstração já disponível
 
-Foi gerado um **APK de demonstração da VIXT Oficina** (4.052.194 bytes,
-SHA-256 `d5fbb042…7053e`), assinado com certificado debug, que abre a página
-real do aplicativo via WebView. Ele está cadastrado no catálogo com o botão
-**"Baixar para Android"**. Barbearia segue com "Android — Em breve".
+Foram gerados **APKs de demonstração da VIXT Oficina e da VIXT Barbearia**,
+assinados com certificado debug, que abrem a página real de cada aplicativo via
+WebView. Ambos estão cadastrados no catálogo com o botão **"Baixar para Android"**.
+
+| App | Tamanho | SHA-256 |
+|---|---|---|
+| Oficina | 4.052.194 B | `d5fbb042…7053e` |
+| Barbearia | 4.339.895 B | `190420b8…71bba` |
 
 Detalhes completos em [`mobile/docs/ANDROID.md`](./mobile/docs/ANDROID.md).
 

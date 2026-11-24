@@ -1,9 +1,9 @@
 {
-  "appId": "br.com.vixt.oficina.demo",
-  "appName": "VIXT Oficina (Demo)",
+  "appId": "br.com.vixt.barbearia.demo",
+  "appName": "VIXT Barbearia (Demo)",
   "webDir": "www",
   "server": {
-    "url": "http://10.0.2.2:3000/aplicativos/oficina",
+    "url": "http://10.0.2.2:3000/aplicativos/barbearia",
     "androidScheme": "http",
     "cleartext": true
   },
@@ -13,8 +13,8 @@
   "plugins": {
     "SplashScreen": {
       "launchAutoHide": true,
-      "backgroundColor": "#2563eb"
+      "backgroundColor": "#0f172a"
     }
   },
-  "_comment": "APK DE DEMONSTRAÇÃO — aponta para o servidor local da VIXT (10.0.2.2 = host do emulador). Não é versão de produção nem será publicado na Play Store."
+  "_comment": "APK DE DEMONSTRAÇÃO da VIXT Barbearia — aponta para o servidor local da VIXT (10.0.2.2 = host do emulador). Não é versão de produção nem será publicado na Play Store."
 }
