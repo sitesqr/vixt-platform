@@ -1,19 +1,37 @@
-/* VIXT PWA — cache simples e seguro, somente rotas públicas de leitura. */
-const CACHE = "vixt-v1";
-const SHELL = ["/", "/aplicativos", "/categorias", "/contato", "/icon-192.png", "/icon-512.png"];
+/* VIXT PWA — cache com versionamento. Mudar CACHE_VERSION invalida páginas antigas. */
+const CACHE_VERSION = "vixt-v2";
+const SHELL = [
+  "/",
+  "/aplicativos",
+  "/categorias",
+  "/contato",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/manifest.webmanifest",
+];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
-  self.skipWaiting();
+  event.waitUntil(
+    caches
+      .open(CACHE_VERSION)
+      .then((cache) => cache.addAll(SHELL))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
-    ),
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_VERSION) // remove vixt-v1 e qualquer outro
+            .map((key) => caches.delete(key)),
+        ),
+      )
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -23,18 +41,31 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/admin")) return;
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const network = fetch(event.request)
+  // Network-first para páginas: sempre busca versão nova, usa cache só offline.
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
         .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-          }
+          const copy = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
           return response;
         })
-        .catch(() => cached);
-      return cached || network;
+        .catch(() => caches.match(event.request).then((r) => r || caches.match("/"))),
+    );
+    return;
+  }
+
+  // Cache-first para assets estáticos.
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+        }
+        return response;
+      });
     }),
   );
 });
