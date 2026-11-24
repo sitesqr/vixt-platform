@@ -1,5 +1,19 @@
 # Changelog — VIXT Central
 
+## [0.3.1] — APKs release assinados (correção do aviso do Android)
+
+- Keystore de release próprio VIXT (`CN=VIXT`), configurado no Gradle via
+  `keystore.properties` (não versionado).
+- APKs de Oficina e Barbearia recompilados em **release** (não debug):
+  - Oficina: 3.151.864 B · `6f207ef0…84b8df0`
+  - Barbearia: 3.151.844 B · `89707699…349163`
+- `apksigner verify` confirmou assinatura v1/v2 com certificado VIXT.
+- Banco de produção atualizado com os novos SHA-256/tamanhos.
+- Documentado que o aviso "arquivo pode ser nocivo" é o Play Protect padrão
+  para sideload, não um defeito do arquivo.
+
+---
+
 ## [0.3.0] — Deploy em produção (Render free + Neon)
 
 - Web Service `vixt-central` no Render (plano free, região Oregon).

@@ -5,4 +5,7 @@ android/app/build/
 android/local.properties
 # APKs de demonstração são versionados para que os downloads funcionem
 # no deploy (são artefatos públicos de demonstração, não segredos).
+
+# Segredos de assinatura
+android/keystore.properties
 *.keystore
