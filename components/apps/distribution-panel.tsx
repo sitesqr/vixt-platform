@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { DistributionButton, DistributionGroup } from "@/modules/applications";
 import type { DistributionPlatform } from "@prisma/client";
+import { PwaInstallButton } from "@/components/layout/pwa-install";
 
 const platformMeta: Record<
   DistributionPlatform,
@@ -48,6 +49,11 @@ function ActiveButton({ button }: { button: DistributionButton }) {
       ? Monitor
       : (platformMeta[button.platform]?.icon ?? Download);
   const size = formatSize(button.fileSizeBytes);
+
+  // PWA precisa de um clique real para disparar o beforeinstallprompt.
+  if (button.type === "PWA") {
+    return <PwaInstallButton label={button.label} />;
+  }
 
   return (
     <a
