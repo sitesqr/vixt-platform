@@ -1,0 +1,380 @@
+// VIXT Central — Schema do banco de dados
+// PostgreSQL (Neon em produção). Nenhum aplicativo externo é reconstruído aqui.
+// Este schema é exclusivo da VIXT Central.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// ============================================================
+// AUTENTICAÇÃO E PERMISSÕES (administrativa)
+// ============================================================
+
+model Admin {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String         @unique @db.VarChar(180)
+  name         String         @db.VarChar(120)
+  passwordHash String         @db.Text
+  roleId       String         @db.Uuid
+  role         AdminRole      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  active       Boolean        @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  auditLogs    AuditLog[]
+  sessions     AdminSession[]
+
+  @@index([active])
+  @@map("admins")
+}
+
+model AdminSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  adminId   String   @db.Uuid
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique @db.VarChar(64)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([expiresAt])
+  @@map("admin_sessions")
+}
+
+model AdminRole {
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @unique @db.VarChar(60)
+  description String?          @db.Text
+  admins      Admin[]
+  permissions RolePermission[]
+
+  @@map("admin_roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid()) @db.Uuid
+  key         String           @unique @db.VarChar(80) // ex: applications.write
+  description String?          @db.Text
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  role         AdminRole  @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  adminId    String?  @db.Uuid
+  admin      Admin?   @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  action     String   @db.VarChar(80) // ex: application.published
+  entityType String   @db.VarChar(60)
+  entityId   String?  @db.VarChar(80)
+  metadata   Json?
+  ipHash     String?  @db.VarChar(64) // hash — IP bruto nunca persistido
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entityType, entityId])
+  @@index([adminId])
+  @@map("audit_logs")
+}
+
+// ============================================================
+// CATÁLOGO DE APLICATIVOS
+// ============================================================
+
+enum AppStatus {
+  DEVELOPMENT
+  TESTING
+  AVAILABLE
+  MAINTENANCE
+  DISCONTINUED
+}
+
+// Preparação arquitetural para marketplace — nenhuma rota/UI habilitada na Fase 1.
+enum Ownership {
+  VIXT
+  THIRD_PARTY
+}
+
+model Application {
+  id             String     @id @default(uuid()) @db.Uuid
+  slug           String     @unique @db.VarChar(100)
+  name           String     @db.VarChar(120)
+  shortName      String?    @db.VarChar(60)
+  tagline        String     @db.Text
+  description    String     @db.Text
+  objective      String?    @db.Text
+  targetAudience String?    @db.Text
+  advantages     Json? // string[] de vantagens
+  requirements   Json? // string[] de requisitos técnicos
+  platforms      Json? // string[] ex: ["Android","Web"]
+  supportEmail   String?    @db.VarChar(180)
+  supportUrl     String?    @db.VarChar(500)
+  status         AppStatus  @default(DEVELOPMENT)
+  published      Boolean    @default(false)
+  featured       Boolean    @default(false)
+  ownership      Ownership  @default(VIXT)
+  publisherId    String?    @db.Uuid
+  publisher      Publisher? @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+  categoryId     String?    @db.Uuid
+  category       Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  iconUrl        String?    @db.VarChar(500)
+  accentColor    String?    @db.VarChar(20)
+  sortOrder      Int        @default(0)
+  releasedAt     DateTime?
+  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime   @default(now())
+
+  features      Feature[]
+  versions      AppVersion[]
+  distributions Distribution[]
+  images        AppImage[]
+  banners       Banner[]
+  analytics     AnalyticsEvent[]
+  dailyStats    DailyStat[]
+  faqs          Faq[]
+
+  @@index([published, status])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([releasedAt])
+  @@index([status])
+  @@map("applications")
+}
+
+model Category {
+  id           String        @id @default(uuid()) @db.Uuid
+  slug         String        @unique @db.VarChar(100)
+  name         String        @unique @db.VarChar(100)
+  description  String?       @db.Text
+  iconName     String?       @db.VarChar(60)
+  sortOrder    Int           @default(0)
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+
+  @@index([active, sortOrder])
+  @@map("categories")
+}
+
+model Feature {
+  id            String      @id @default(uuid()) @db.Uuid
+  applicationId String      @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  title         String      @db.VarChar(160)
+  description   String?     @db.Text
+  iconName      String?     @db.VarChar(60)
+  sortOrder     Int         @default(0)
+
+  @@index([applicationId, sortOrder])
+  @@map("features")
+}
+
+model AppImage {
+  id            String      @id @default(uuid()) @db.Uuid
+  applicationId String      @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  url           String      @db.VarChar(500)
+  alt           String      @db.VarChar(200)
+  caption       String?     @db.VarChar(240)
+  kind          ImageKind   @default(SCREENSHOT)
+  sortOrder     Int         @default(0)
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId, sortOrder])
+  @@map("app_images")
+}
+
+enum ImageKind {
+  ICON
+  SCREENSHOT
+  COVER
+  VIDEO_POSTER
+}
+
+// Entidade reservada para o futuro marketplace — sem cadastro público nesta versão.
+model Publisher {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @db.VarChar(160)
+  slug         String        @unique @db.VarChar(100)
+  approved     Boolean       @default(false)
+  applications Application[]
+  createdAt    DateTime      @default(now())
+
+  @@map("publishers")
+}
+
+// ============================================================
+// VERSÕES E DISTRIBUIÇÃO
+// ============================================================
+
+enum VersionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model AppVersion {
+  id            String        @id @default(uuid()) @db.Uuid
+  applicationId String        @db.Uuid
+  application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  version       String        @db.VarChar(40) // ex: 1.2.0
+  changelog     String?       @db.Text
+  status        VersionStatus @default(DRAFT)
+  releasedAt    DateTime?
+  createdAt     DateTime      @default(now())
+
+  distributions Distribution[]
+
+  @@unique([applicationId, version])
+  @@index([applicationId, status, releasedAt])
+  @@map("app_versions")
+}
+
+enum DistributionType {
+  WEB
+  PLAY_STORE
+  APK
+  PWA
+  DESKTOP
+  OTHER
+}
+
+model Distribution {
+  id            String           @id @default(uuid()) @db.Uuid
+  applicationId String           @db.Uuid
+  application   Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  versionId     String?          @db.Uuid
+  version       AppVersion?      @relation(fields: [versionId], references: [id], onDelete: SetNull)
+  type          DistributionType
+  label         String           @db.VarChar(120)
+  url           String           @db.VarChar(800)
+  active        Boolean          @default(true)
+  // Quando false, cliques são contabilizados como CLICK e não como DOWNLOAD confirmado.
+  trackDownload Boolean          @default(true)
+  sortOrder     Int              @default(0)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  analytics     AnalyticsEvent[]
+
+  @@index([applicationId, active])
+  @@index([versionId])
+  @@map("distributions")
+}
+
+// ============================================================
+// CONTEÚDO INSTITUCIONAL
+// ============================================================
+
+model SiteContent {
+  key       String   @id @db.VarChar(80)
+  title     String?  @db.VarChar(200)
+  value     String   @db.Text
+  isDefault Boolean  @default(true) // true enquanto não editado pelo admin
+  updatedAt DateTime @updatedAt
+  updatedBy String?  @db.Uuid
+
+  @@map("site_contents")
+}
+
+model Faq {
+  id            String       @id @default(uuid()) @db.Uuid
+  question      String       @db.Text
+  answer        String       @db.Text
+  applicationId String?      @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  sortOrder     Int          @default(0)
+  active        Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([active, sortOrder])
+  @@index([applicationId])
+  @@map("faqs")
+}
+
+model Banner {
+  id            String       @id @default(uuid()) @db.Uuid
+  title         String       @db.VarChar(200)
+  subtitle      String?      @db.Text
+  imageUrl      String?      @db.VarChar(500)
+  ctaLabel      String?      @db.VarChar(100)
+  ctaUrl        String?      @db.VarChar(500)
+  applicationId String?      @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  active        Boolean      @default(false)
+  sortOrder     Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([active, sortOrder])
+  @@map("banners")
+}
+
+model Setting {
+  key       String   @id @db.VarChar(80)
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+// ============================================================
+// ESTATÍSTICAS (sem PII, sem login)
+// ============================================================
+
+enum AnalyticsEventType {
+  VIEW
+  CLICK
+  DOWNLOAD
+}
+
+model AnalyticsEvent {
+  id             String             @id @default(uuid()) @db.Uuid
+  type           AnalyticsEventType
+  applicationId  String?            @db.Uuid
+  application    Application?       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  distributionId String?            @db.Uuid
+  distribution   Distribution?      @relation(fields: [distributionId], references: [id], onDelete: SetNull)
+  sessionHash    String?            @db.VarChar(64) // hash rotacionável; IP bruto nunca salvo
+  referrer       String?            @db.VarChar(300)
+  confirmed      Boolean            @default(false) // instalação real não é confirmável
+  createdAt      DateTime           @default(now())
+
+  @@index([createdAt])
+  @@index([applicationId, type, createdAt])
+  @@index([type, createdAt])
+  @@index([distributionId])
+  @@map("analytics_events")
+}
+
+// Agregação diária para consultas rápidas no dashboard.
+model DailyStat {
+  id            String      @id @default(uuid()) @db.Uuid
+  date          DateTime    @db.Date
+  applicationId String      @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  views         Int         @default(0)
+  clicks        Int         @default(0)
+  downloads     Int         @default(0)
+
+  @@unique([date, applicationId])
+  @@index([date])
+  @@map("daily_stats")
+}

@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ============================================================
+   VIXT Design System — tokens
+   ============================================================ */
+:root {
+  --vixt-blue-50: #eff6ff;
+  --vixt-blue-100: #dbeafe;
+  --vixt-blue-200: #bfdbfe;
+  --vixt-blue-300: #93c5fd;
+  --vixt-blue-400: #60a5fa;
+  --vixt-blue-500: #3b82f6;
+  --vixt-blue-600: #2563eb;
+  --vixt-blue-700: #1d4ed8;
+  --vixt-blue-800: #1e40af;
+  --vixt-blue-900: #1e3a8a;
+  --vixt-electric: #2f6bff;
+  --vixt-cyan: #06b6d4;
+
+  --vixt-ink: #0b1220;
+  --vixt-ink-soft: #1e293b;
+  --vixt-gray: #64748b;
+  --vixt-gray-light: #f8fafc;
+  --vixt-border: #e2e8f0;
+  --vixt-white: #ffffff;
+
+  --vixt-radius: 16px;
+  --vixt-radius-sm: 10px;
+  --vixt-shadow: 0 10px 40px -12px rgba(15, 23, 42, 0.12);
+  --vixt-shadow-blue: 0 18px 50px -18px rgba(37, 99, 235, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--vixt-gray-light);
+  color: var(--vixt-ink);
+  font-family: var(--font-vixt), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Seleção e foco consistentes com a marca */
+::selection {
+  background: var(--vixt-blue-200);
+  color: var(--vixt-blue-900);
+}
+
+:focus-visible {
+  outline: 3px solid var(--vixt-blue-400);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Utilitários do design system
+   ============================================================ */
+@utility vixt-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@utility vixt-gradient {
+  background: linear-gradient(135deg, var(--vixt-blue-700), var(--vixt-electric) 55%, var(--vixt-cyan));
+}
+
+@utility vixt-gradient-text {
+  background: linear-gradient(100deg, var(--vixt-blue-700), var(--vixt-electric), var(--vixt-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility vixt-card {
+  background: var(--vixt-white);
+  border: 1px solid var(--vixt-border);
+  border-radius: var(--vixt-radius);
+  box-shadow: var(--vixt-shadow);
+}
+
+@utility vixt-glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Grid de fundo tecnológico sutil para heróis */
+.vixt-grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Animações suaves, respeitando preferência de movimento */
+@keyframes vixt-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes vixt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes vixt-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(47, 107, 255, 0.45); }
+  70% { box-shadow: 0 0 0 18px rgba(47, 107, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(47, 107, 255, 0); }
+}
+
+.animate-fade-up {
+  animation: vixt-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-float {
+  animation: vixt-float 6s ease-in-out infinite;
+}
+
+.animate-pulse-ring {
+  animation: vixt-pulse-ring 2.5s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
