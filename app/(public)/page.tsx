@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AppCard } from "@/components/apps/app-card";
+import { StoreAppCard } from "@/components/apps/store-app-card";
 import { applicationsService } from "@/modules/applications";
 import { categoriesService } from "@/modules/categories";
 import { contentService } from "@/modules/content";
@@ -68,7 +68,10 @@ const steps = [
 
 export default async function HomePage() {
   const [apps, categories, content, faqs] = await Promise.all([
-    safePublicQuery(() => applicationsService.getFeatured(), []),
+    safePublicQuery(
+      () => applicationsService.getCatalog({ page: 1, pageSize: 24 }),
+      { items: [], total: 0, page: 1, pageSize: 24, totalPages: 0 },
+    ),
     safePublicQuery(() => categoriesService.listPublic(), []),
     safePublicQuery(() => contentService.getPublicContent(), {}),
     safePublicQuery(() => contentService.listFaqs(), []),
@@ -151,6 +154,42 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* LOJA — vitrine de aplicativos em destaque na página inicial */}
+      <section className="border-b border-[#e2e8f0] bg-white py-20">
+        <div className="vixt-container">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-2xl">
+              <p className="text-sm font-bold tracking-wider text-[#2563eb] uppercase">
+                Loja VIXT
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0b1220] sm:text-4xl">
+                Baixe os aplicativos
+              </h2>
+              <p className="mt-3 text-[#64748b]">
+                Instale gratuitamente no seu celular — sem cadastro e sem assinatura.
+              </p>
+            </div>
+            <ButtonLink href="/aplicativos" variant="secondary">
+              Ver todos <ArrowRight size={16} />
+            </ButtonLink>
+          </div>
+
+          {apps.items.length > 0 ? (
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {apps.items.map((app) => (
+                <StoreAppCard key={app.id} app={app} />
+              ))}
+            </div>
+          ) : (
+            <div className="vixt-card mt-10 border-dashed p-10 text-center">
+              <p className="font-semibold text-[#1e293b]">
+                Os aplicativos aparecerão aqui em breve.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* BENEFÍCIOS */}
       <section className="vixt-container py-20" id="beneficios">
         <div className="max-w-2xl">
@@ -171,45 +210,6 @@ export default async function HomePage() {
               <p className="mt-2 text-sm leading-6 text-[#64748b]">{b.text}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* APLICATIVOS EM DESTAQUE */}
-      <section className="border-y border-[#e2e8f0] bg-white py-20">
-        <div className="vixt-container">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="max-w-2xl">
-              <p className="text-sm font-bold tracking-wider text-[#2563eb] uppercase">
-                Catálogo
-              </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0b1220] sm:text-4xl">
-                Aplicativos em destaque
-              </h2>
-              <p className="mt-3 text-[#64748b]">
-                Conheça as soluções publicadas pela VIXT.
-              </p>
-            </div>
-            <ButtonLink href="/aplicativos" variant="secondary">
-              Ver todos <ArrowRight size={16} />
-            </ButtonLink>
-          </div>
-
-          {apps.length > 0 ? (
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {apps.map((app) => (
-                <AppCard key={app.id} app={app} />
-              ))}
-            </div>
-          ) : (
-            <div className="vixt-card mt-10 border-dashed p-10 text-center">
-              <p className="font-semibold text-[#1e293b]">
-                O catálogo está sendo preparado.
-              </p>
-              <p className="mt-2 text-sm text-[#64748b]">
-                Os aplicativos publicados aparecerão aqui automaticamente.
-              </p>
-            </div>
-          )}
         </div>
       </section>
 

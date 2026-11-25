@@ -14,6 +14,7 @@ const summarySelect = {
   tagline: true,
   iconUrl: true,
   accentColor: true,
+  pwaUrl: true,
   status: true,
   featured: true,
   releasedAt: true,

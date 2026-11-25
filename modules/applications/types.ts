@@ -19,6 +19,7 @@ export interface AppRow {
   tagline: string;
   iconUrl: string | null;
   accentColor: string | null;
+  pwaUrl: string | null;
   status: AppStatus;
   featured: boolean;
   releasedAt: Date | null;
@@ -33,6 +34,7 @@ export interface AppSummary {
   tagline: string;
   iconUrl: string | null;
   accentColor: string | null;
+  pwaUrl: string | null;
   status: AppStatus;
   featured: boolean;
   releasedAt: string | null;
