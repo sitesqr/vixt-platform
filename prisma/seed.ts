@@ -76,6 +76,7 @@ const apps = [
     accentColor: "#334155",
     distributionEnv: "LINK_BORRACHARIA_WEB",
     distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_BORRACHARIA_URL",
   },
   {
     slug: "salao",
@@ -94,6 +95,7 @@ const apps = [
     accentColor: "#db2777",
     distributionEnv: "LINK_SALAO_WEB",
     distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_SALAO_URL",
   },
   {
     slug: "beauty",
@@ -132,6 +134,7 @@ const apps = [
     accentColor: "#0891b2",
     distributionEnv: "LINK_LAVA_RAPIDO_WEB",
     distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_LAVA_RAPIDO_URL",
   },
 ];
 
