@@ -15,9 +15,10 @@ const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 const adminPassword = process.env.ADMIN_PASSWORD;
 const adminName = process.env.ADMIN_NAME?.trim() || "Administrador VIXT";
 
-// Aplicativos mantidos no catálogo mas ainda não disponíveis ao público.
-// O seed nunca republica estes slugs — a publicação é feita pelo painel admin.
-const DEFERRED_SLUGS = new Set(["borracharia", "lava-rapido", "salao"]);
+// Aplicativos que devem aparecer na vitrine mesmo sem link de acesso próprio.
+// A loja exibe o catálogo completo; estes ficam sem botão de acesso até que
+// uma URL real seja configurada (via painel admin ou LINK_<APP>_WEB).
+const STOREFRONT_SLUGS = new Set(["borracharia", "lava-rapido", "salao"]);
 
 const apps = [
   {
@@ -279,13 +280,14 @@ async function main() {
     categoryIds[cat.slug] = row.id;
   }
 
-  // Aplicativos — publicados somente se houver link real configurado.
+  // Aplicativos — publicados se houver link real configurado ou se fizerem
+  // parte da vitrine (catálogo completo, mesmo sem link próprio).
   for (const app of apps) {
     const link = process.env[app.distributionEnv]?.trim();
     // Nunca publicar links locais em produção.
     const isLocal = Boolean(link && link.includes("localhost"));
     const validLink = Boolean(link && link.startsWith("http") && !isLocal);
-    const published = validLink;
+    const published = validLink || STOREFRONT_SLUGS.has(app.slug);
     const pwaEnvKey = "pwaEnv" in app && typeof app.pwaEnv === "string" ? app.pwaEnv : null;
     const pwa = pwaEnvKey ? process.env[pwaEnvKey]?.trim() : undefined;
     const validPwa = Boolean(pwa && pwa.startsWith("http") && !pwa.includes("localhost")) ? pwa : null;
@@ -326,13 +328,11 @@ async function main() {
         platforms: app.platforms,
         accentColor: app.accentColor,
         pwaUrl: validPwa,
-        // Respeita despublicações feitas pelo painel administrativo.
-        ...(DEFERRED_SLUGS.has(app.slug)
-          ? {}
-          : {
-              status: published ? AppStatus.AVAILABLE : AppStatus.DEVELOPMENT,
-              published,
-            }),
+        // Nunca despublica um app que já está na loja: a despublicação é
+        // decisão exclusiva do painel administrativo.
+        ...(published
+          ? { status: AppStatus.AVAILABLE, published: true }
+          : {}),
       },
     });
 

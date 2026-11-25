@@ -52,10 +52,10 @@ que não fazem parte desta versão (sem downloads).
 - primeiro admin **somente** se `ADMIN_EMAIL` e `ADMIN_PASSWORD` existirem;
 - categorias, aplicativos, FAQs e textos padrão.
 
-Aplicativos só são publicados se `LINK_<APP>_WEB` contiver uma URL http(s) real
-e não-local — nunca links inventados. `DEFERRED_SLUGS` mantém adiados
-Borracharia, Lava Rápido e Salão. Beauty é publicado com
-`LINK_BEAUTY_WEB="https://vixt-beauty.onrender.com/"`.
+Aplicativos são publicados se `LINK_<APP>_WEB` contiver uma URL http(s) real e
+não-local — nunca links inventados. `STOREFRONT_SLUGS` mantém Borracharia, Lava
+Rápido e Salão visíveis na vitrine mesmo sem link próprio. O seed nunca
+despublica um aplicativo já publicado: despublicações são feitas no painel admin.
 
 ## Backup (Neon)
 

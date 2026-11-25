@@ -1,5 +1,15 @@
 # Changelog — VIXT Central
 
+## [Não publicado] — Catálogo completo (vitrine)
+
+- Todos os aplicativos próprios aparecem no catálogo. `STOREFRONT_SLUGS`
+  substitui `DEFERRED_SLUGS`: Borracharia, Lava Rápido e Salão ficam visíveis
+  mesmo sem link de acesso (sem botão até configurarem URL real).
+- O seed nunca mais despublica aplicativos já publicados quando uma
+  `LINK_<APP>_WEB` está ausente — a despublicação passa a ser exclusiva do painel.
+
+---
+
 ## [Não publicado] — VIXT Beauty no catálogo
 
 - Novo aplicativo **VIXT Beauty** (`beauty`) na categoria Beleza, seguindo o
