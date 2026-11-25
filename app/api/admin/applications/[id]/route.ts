@@ -46,7 +46,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
     const allowed = [
       "slug", "name", "tagline", "description", "objective", "targetAudience",
-      "advantages", "requirements", "platforms", "supportEmail", "supportUrl",
+      "advantages", "requirements", "platforms", "supportEmail", "supportUrl", "pwaUrl",
       "categoryId", "iconUrl", "accentColor", "status", "published",
       "featured", "sortOrder", "releasedAt",
     ] as const;

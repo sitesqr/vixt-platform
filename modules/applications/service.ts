@@ -95,6 +95,7 @@ export const applicationsService = {
       platforms: safeJsonStringArray(app.platforms),
       supportEmail: app.supportEmail,
       supportUrl: app.supportUrl,
+      pwaUrl: app.pwaUrl?.startsWith("http") ? app.pwaUrl : null,
       features: app.features.map((f) => ({
         title: f.title,
         description: f.description,

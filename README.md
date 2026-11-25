@@ -13,8 +13,9 @@ painel administrativo protegido.
 - Portal público com identidade visual VIXT (design system próprio).
 - Catálogo 100% dinâmico (Prisma/PostgreSQL), com pesquisa, filtros, ordenação
   e paginação no servidor.
-- Páginas individuais com descrição, funcionalidades, versões, requisitos e
-  botão de acesso à versão web.
+- Páginas individuais com descrição, funcionalidades, versões, requisitos,
+  botão de acesso à versão web e — quando configurado — botão **"Baixar no
+  celular (PWA)"** daquele aplicativo.
 - Links de acesso cadastrados no painel; redirecionamento seguro pelo backend.
 - Estatísticas de VISUALIZAÇÃO e CLIQUE sem login e sem PII.
 - Painel administrativo em `/admin` com Argon2id + JWT em cookie HttpOnly,

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DistributionPanel } from "@/components/apps/distribution-panel";
+import { PwaDownloadButton } from "@/components/apps/pwa-download-button";
 import { applicationsService } from "@/modules/applications";
 import { safePublicQuery } from "@/lib/safe-data";
 import { trackEvent, hashSession, newSessionId } from "@/lib/analytics";
@@ -150,6 +151,10 @@ export default async function AppDetailPage({ params }: Props) {
             <aside className="vixt-card sticky top-24 p-6">
               <p className="text-xs font-bold tracking-wide text-[#64748b] uppercase">Acesso</p>
               <DistributionPanel groups={app.distributionGroups} />
+
+              {app.pwaUrl && (
+                <PwaDownloadButton url={app.pwaUrl} appName={app.name} />
+              )}
 
               {app.platforms.length > 0 && (
                 <div className="mt-6 border-t border-[#e2e8f0] pt-5">

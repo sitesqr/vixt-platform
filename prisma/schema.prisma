@@ -125,6 +125,8 @@ model Application {
   platforms      Json? // string[] ex: ["Android","Web"]
   supportEmail   String?    @db.VarChar(180)
   supportUrl     String?    @db.VarChar(500)
+  // URL da PWA instalável do aplicativo (celular). Vazia = sem download PWA.
+  pwaUrl         String?    @db.VarChar(800)
   status         AppStatus  @default(DEVELOPMENT)
   published      Boolean    @default(false)
   featured       Boolean    @default(false)

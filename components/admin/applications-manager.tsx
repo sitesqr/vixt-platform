@@ -32,6 +32,7 @@ const emptyForm = {
   name: "",
   tagline: "",
   description: "",
+  pwaUrl: "",
   categoryId: "",
   status: "DEVELOPMENT",
   featured: false,
@@ -65,6 +66,7 @@ export function ApplicationsManager({
       name: app.name,
       tagline: app.tagline,
       description: "",
+      pwaUrl: "",
       categoryId: "",
       status: app.status,
       featured: app.featured,
@@ -87,6 +89,7 @@ export function ApplicationsManager({
         featured: form.featured,
       };
       if (form.description) payload.description = form.description;
+      if (form.pwaUrl) payload.pwaUrl = form.pwaUrl;
       if (form.categoryId) payload.categoryId = form.categoryId;
 
       const response = await fetch(
@@ -186,6 +189,13 @@ export function ApplicationsManager({
           </Field>
           <Field label="Descrição completa">
             <Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          </Field>
+          <Field label="URL da PWA (celular)" hint="Deixe vazio para não exibir botão de download">
+            <Input
+              value={form.pwaUrl}
+              onChange={(e) => setForm({ ...form, pwaUrl: e.target.value })}
+              placeholder="https://app.vixt.com.br"
+            />
           </Field>
           <label className="flex items-center gap-2 text-sm text-[#1e293b]">
             <input

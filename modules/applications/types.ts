@@ -63,6 +63,8 @@ export interface AppDetail extends AppSummary {
   platforms: string[];
   supportEmail: string | null;
   supportUrl: string | null;
+  /** URL da PWA instalável no celular — quando presente, exibe botão de download. */
+  pwaUrl: string | null;
   features: { title: string; description: string | null; iconName: string | null }[];
   images: { url: string; alt: string; caption: string | null; kind: string }[];
   versions: {

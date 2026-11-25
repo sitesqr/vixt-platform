@@ -1,5 +1,20 @@
 # Changelog — VIXT Central
 
+## [0.5.0] — Downloads PWA por aplicativo
+
+A VIXT Central continua sem download próprio. Cada **aplicativo publicado**
+pode ter sua PWA instalável no celular.
+
+- Novo campo `Application.pwaUrl` (migration `20261125010000_application_pwa_url`).
+- Botão **"Baixar no celular (PWA)"** na página do aplicativo, exibido somente
+  quando `pwaUrl` é uma URL http(s) válida.
+- Sem APK, sem arquivos e sem Desktop — o download ocorre na PWA do próprio
+  aplicativo (VIXT Oficina e VIXT Barber já possuem manifest + service worker).
+- Campo editável no painel admin (`pwaUrl`), preparado para futuros aplicativos.
+- Variáveis `PWA_OFICINA_URL` e `PWA_BARBEARIA_URL` no seed/.env.example.
+
+---
+
 ## [0.4.0] — Remoção completa de downloads e PWA
 
 A pedido, todos os recursos de distribuição de arquivos foram removidos.

@@ -37,6 +37,7 @@ const apps = [
     accentColor: "#2563eb",
     distributionEnv: "LINK_OFICINA_WEB",
     distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_OFICINA_URL",
   },
   {
     slug: "barbearia",
@@ -55,6 +56,7 @@ const apps = [
     accentColor: "#0f172a",
     distributionEnv: "LINK_BARBEARIA_WEB",
     distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_BARBEARIA_URL",
   },
   {
     slug: "borracharia",
@@ -264,6 +266,9 @@ async function main() {
     const isLocal = Boolean(link && link.includes("localhost"));
     const validLink = Boolean(link && link.startsWith("http") && !isLocal);
     const published = validLink;
+    const pwaEnvKey = "pwaEnv" in app && typeof app.pwaEnv === "string" ? app.pwaEnv : null;
+    const pwa = pwaEnvKey ? process.env[pwaEnvKey]?.trim() : undefined;
+    const validPwa = Boolean(pwa && pwa.startsWith("http") && !pwa.includes("localhost")) ? pwa : null;
 
     const row = await prisma.application.upsert({
       where: { slug: app.slug },
@@ -277,6 +282,7 @@ async function main() {
         advantages: app.advantages,
         platforms: app.platforms,
         accentColor: app.accentColor,
+        pwaUrl: validPwa,
         categoryId:
           categoryIds[
             app.slug === "oficina" || app.slug === "borracharia" || app.slug === "lava-rapido"
@@ -299,6 +305,7 @@ async function main() {
         advantages: app.advantages,
         platforms: app.platforms,
         accentColor: app.accentColor,
+        pwaUrl: validPwa,
         // Respeita despublicações feitas pelo painel administrativo.
         ...(DEFERRED_SLUGS.has(app.slug)
           ? {}

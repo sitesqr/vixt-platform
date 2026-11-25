@@ -19,6 +19,7 @@ const createSchema = z.object({
   platforms: z.array(z.string()).optional(),
   supportEmail: z.string().email().optional(),
   supportUrl: urlSchema.optional(),
+  pwaUrl: urlSchema.optional(),
   categoryId: z.string().uuid().optional(),
   iconUrl: urlSchema.optional(),
   accentColor: z

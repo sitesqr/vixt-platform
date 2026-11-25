@@ -8,7 +8,7 @@ PostgreSQL independente. **Nenhum banco dos aplicativos existentes é utilizado.
 | --- | --- |
 | `admins`, `admin_sessions`, `admin_roles`, `permissions`, `role_permissions` | Autenticação e RBAC administrativo |
 | `audit_logs` | Auditoria de ações (sem IP bruto) |
-| `applications` | Catálogo (slug único, status, publicação, destaque, ownership) |
+| `applications` | Catálogo (slug único, status, publicação, destaque, ownership, `pwaUrl`) |
 | `categories` | Categorias dinâmicas |
 | `features`, `app_images` | Funcionalidades e galeria por aplicativo |
 | `publishers` | Reservado para marketplace futuro (não ativo) |
