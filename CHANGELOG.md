@@ -1,5 +1,14 @@
 # Changelog — VIXT Central
 
+## [0.3.7] — Download sem diálogo de re-download
+
+- URLs de download versionadas (`*-instalador-v1.apk`), nomes de arquivo
+  amigáveis no `Content-Disposition` e `Cache-Control: no-store`.
+- Link usa o atributo `download` do HTML.
+- Evita o prompt "Baixar o arquivo novamente?" do Chrome.
+
+---
+
 ## [0.3.6] — Instalador PWA com um clique / remoção do Desktop
 
 - APK instalador leve (~12 KB) para Oficina e Barbearia, assinado com chave
