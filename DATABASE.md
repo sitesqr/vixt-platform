@@ -54,7 +54,8 @@ que não fazem parte desta versão (sem downloads).
 
 Aplicativos só são publicados se `LINK_<APP>_WEB` contiver uma URL http(s) real
 e não-local — nunca links inventados. `DEFERRED_SLUGS` mantém adiados
-Borracharia, Lava Rápido e Salão.
+Borracharia, Lava Rápido e Salão. Beauty é publicado com
+`LINK_BEAUTY_WEB="https://vixt-beauty.onrender.com/"`.
 
 ## Backup (Neon)
 

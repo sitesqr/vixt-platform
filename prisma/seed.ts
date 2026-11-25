@@ -95,6 +95,26 @@ const apps = [
     distributionType: DistributionType.WEB,
   },
   {
+    slug: "beauty",
+    name: "VIXT Beauty",
+    tagline: "Sistema para gestão de salões de beleza e estética.",
+    description:
+      "O VIXT Beauty é uma solução para organizar a rotina de salões de beleza e centros de estética: agenda, clientes, profissionais e atendimentos em um só lugar.",
+    objective: "Simplificar a gestão de salões de beleza e o agendamento de clientes.",
+    targetAudience:
+      "Salões de beleza, esteticistas, cabeleireiros e profissionais do segmento de beleza.",
+    advantages: [
+      "Agenda e clientes organizados em um só lugar",
+      "Acesso pelo navegador, sem instalação",
+      "Desenvolvido pela VIXT",
+    ],
+    platforms: ["Web"],
+    accentColor: "#be185d",
+    distributionEnv: "LINK_BEAUTY_WEB",
+    distributionType: DistributionType.WEB,
+    pwaEnv: "PWA_BEAUTY_URL",
+  },
+  {
     slug: "lava-rapido",
     name: "VIXT Lava Rápido",
     tagline: "Sistema para gestão de lava-rápidos.",
@@ -287,7 +307,7 @@ async function main() {
           categoryIds[
             app.slug === "oficina" || app.slug === "borracharia" || app.slug === "lava-rapido"
               ? "automotivo"
-              : app.slug === "salao" || app.slug === "barbearia"
+              : app.slug === "salao" || app.slug === "barbearia" || app.slug === "beauty"
                 ? "beleza"
                 : "gestao-empresarial"
           ],

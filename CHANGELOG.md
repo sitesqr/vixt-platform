@@ -1,5 +1,15 @@
 # Changelog — VIXT Central
 
+## [Não publicado] — VIXT Beauty no catálogo
+
+- Novo aplicativo **VIXT Beauty** (`beauty`) na categoria Beleza, seguindo o
+  mesmo padrão dos demais aplic próprios: seed idempotente, publicação apenas
+  com `LINK_BEAUTY_WEB` real e PWA opcional via `PWA_BEAUTY_URL`.
+- Publicado com a URL real `https://vixt-beauty.onrender.com/` (`LINK_BEAUTY_WEB`),
+  com botão **"Baixar no celular (PWA)"** via `PWA_BEAUTY_URL`.
+
+---
+
 ## [0.5.0] — Downloads PWA por aplicativo
 
 A VIXT Central continua sem download próprio. Cada **aplicativo publicado**

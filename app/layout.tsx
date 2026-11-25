@@ -25,6 +25,8 @@ export const metadata: Metadata = {
     "gestão empresarial",
     "oficina mecânica",
     "barbearia",
+    "salão de beleza",
+    "estética",
     "lava rápido",
   ],
   authors: [{ name: "VIXT" }],
