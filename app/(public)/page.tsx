@@ -3,7 +3,7 @@ import {
   ArrowRight,
   Blocks,
   CheckCircle2,
-  Download,
+  ExternalLink,
   Gift,
   Layers3,
   MousePointerClick,
@@ -60,7 +60,7 @@ const steps = [
   },
   {
     number: "03",
-    icon: Download,
+    icon: ExternalLink,
     title: "Use gratuitamente",
     text: "Acesse pelo navegador ou baixe pelo link disponível, sem burocracia.",
   },
@@ -334,7 +334,7 @@ export default async function HomePage() {
                   </summary>
                   <p className="mt-3 text-sm leading-6 text-[#64748b]">
                     Não. Você pode navegar pelo catálogo e acessar os links de
-                    download sem cadastro ou login.
+                    acesso sem cadastro ou login.
                   </p>
                 </details>
               </>

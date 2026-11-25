@@ -7,7 +7,7 @@ export interface CreateDistributionInput {
   label: string;
   url: string;
   active?: boolean;
-  trackDownload?: boolean;
+  
   sortOrder?: number;
 }
 

@@ -148,7 +148,7 @@ export default async function AppDetailPage({ params }: Props) {
             </div>
 
             <aside className="vixt-card sticky top-24 p-6">
-              <p className="text-xs font-bold tracking-wide text-[#64748b] uppercase">Distribuição</p>
+              <p className="text-xs font-bold tracking-wide text-[#64748b] uppercase">Acesso</p>
               <DistributionPanel groups={app.distributionGroups} />
 
               {app.platforms.length > 0 && (

@@ -5,10 +5,7 @@ import { trackEvent, hashSession, newSessionId } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Redireciona para a URL de distribuição cadastrada.
- * O destino vem SEMPRE do banco — nunca de parâmetro da requisição (open redirect).
- */
+/** Redireciona para o link de acesso cadastrado no banco (nunca do cliente). */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -16,12 +13,7 @@ export async function GET(
   const { id } = await params;
   const distribution = await prisma.distribution.findFirst({
     where: { id, active: true },
-    select: {
-      id: true,
-      applicationId: true,
-      url: true,
-      trackDownload: true,
-    },
+    select: { id: true, applicationId: true, url: true },
   });
 
   if (!distribution || !distribution.url.startsWith("http")) {
@@ -35,12 +27,11 @@ export async function GET(
   const sid = store.get("vixt_sid")?.value ?? newSessionId();
 
   void trackEvent({
-    type: distribution.trackDownload ? "DOWNLOAD" : "CLICK",
+    type: "CLICK",
     applicationId: distribution.applicationId,
     distributionId: distribution.id,
     sessionHash: hashSession(sid),
     referrer: request.headers.get("referer") ?? undefined,
-    confirmed: false,
   });
 
   const response = NextResponse.redirect(distribution.url, 302);

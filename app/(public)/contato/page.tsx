@@ -59,7 +59,7 @@ export default async function ContactPage() {
         <h2 className="mt-4 text-xl font-extrabold text-[#0b1220]">Privacidade (LGPD)</h2>
         <p className="mt-2 text-sm leading-6 text-[#64748b]">
           O catálogo VIXT não exige login e não coleta informações pessoais para
-          navegação ou download. Estatísticas são registradas de forma agregada,
+          navegação ou acesso. Estatísticas são registradas de forma agregada,
           sem IP bruto ou identificação pessoal.
         </p>
       </section>

@@ -249,53 +249,26 @@ model AppVersion {
 
 enum DistributionType {
   WEB
-  PLAY_STORE
-  APK
-  PWA
-  DESKTOP
   OTHER
-}
-
-enum DistributionPlatform {
-  WEB
-  WINDOWS
-  ANDROID
-  MACOS
-  LINUX
-  OTHER
-}
-
-enum DistributionAvailability {
-  AVAILABLE
-  COMING_SOON
 }
 
 model Distribution {
-  id             String                   @id @default(uuid()) @db.Uuid
-  applicationId  String                   @db.Uuid
-  application    Application              @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  versionId      String?                  @db.Uuid
-  version        AppVersion?              @relation(fields: [versionId], references: [id], onDelete: SetNull)
-  type           DistributionType
-  platform       DistributionPlatform     @default(WEB)
-  availability   DistributionAvailability @default(AVAILABLE)
-  label          String                   @db.VarChar(120)
-  url            String                   @db.VarChar(800)
-  fileName       String?                  @db.VarChar(200)
-  fileSizeBytes  BigInt?                  @db.BigInt
-  checksumSha256 String?                  @db.VarChar(64)
-  notes          String?                  @db.Text
-  active         Boolean                  @default(true)
-  // Quando false, cliques são contabilizados como CLICK e não como DOWNLOAD confirmado.
-  trackDownload  Boolean                  @default(true)
-  sortOrder      Int                      @default(0)
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @updatedAt
-  analytics      AnalyticsEvent[]
+  id            String           @id @default(uuid()) @db.Uuid
+  applicationId String           @db.Uuid
+  application   Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  versionId     String?          @db.Uuid
+  version       AppVersion?      @relation(fields: [versionId], references: [id], onDelete: SetNull)
+  type          DistributionType
+  label         String           @db.VarChar(120)
+  url           String           @db.VarChar(800)
+  active        Boolean          @default(true)
+  sortOrder     Int              @default(0)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  analytics     AnalyticsEvent[]
 
   @@index([applicationId, active])
   @@index([versionId])
-  @@index([applicationId, platform, availability])
   @@map("distributions")
 }
 
@@ -363,7 +336,6 @@ model Setting {
 enum AnalyticsEventType {
   VIEW
   CLICK
-  DOWNLOAD
 }
 
 model AnalyticsEvent {
@@ -375,7 +347,6 @@ model AnalyticsEvent {
   distribution   Distribution?      @relation(fields: [distributionId], references: [id], onDelete: SetNull)
   sessionHash    String?            @db.VarChar(64) // hash rotacionável; IP bruto nunca salvo
   referrer       String?            @db.VarChar(300)
-  confirmed      Boolean            @default(false) // instalação real não é confirmável
   createdAt      DateTime           @default(now())
 
   @@index([createdAt])
@@ -393,7 +364,6 @@ model DailyStat {
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   views         Int         @default(0)
   clicks        Int         @default(0)
-  downloads     Int         @default(0)
 
   @@unique([date, applicationId])
   @@index([date])

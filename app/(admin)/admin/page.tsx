@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Blocks, Download, Eye, FolderTree, MousePointerClick, Plus } from "lucide-react";
+import { ArrowUpRight, Blocks, Eye, FolderTree, MousePointerClick, Plus } from "lucide-react";
 import { StatsClient } from "@/components/admin/stats-client";
 import { statsRepository } from "@/modules/stats";
 import { safePublicQuery } from "@/lib/safe-data";
@@ -16,10 +16,8 @@ const empty = {
     categories: 0,
     views: 0,
     clicks: 0,
-    downloads: 0,
   },
   topViewed: [],
-  topDownloaded: [],
   timeline: [],
   recentActivity: [],
   newPublished: [],
@@ -35,7 +33,6 @@ export default async function AdminDashboard() {
     { label: "Categorias", value: stats.totals.categories, icon: FolderTree, href: "/admin/categorias" },
     { label: "Visualizações", value: stats.totals.views, icon: Eye, href: "/admin/estatisticas" },
     { label: "Cliques", value: stats.totals.clicks, icon: MousePointerClick, href: "/admin/estatisticas" },
-    { label: "Downloads", value: stats.totals.downloads, icon: Download, href: "/admin/estatisticas" },
   ];
 
   return (

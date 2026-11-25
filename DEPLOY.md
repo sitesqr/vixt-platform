@@ -1,38 +1,54 @@
 # Deploy — VIXT Central
 
-> ✅ **Deploy executado em 24/11/2026** (mediante autorização).
-
 ## Ambiente de produção
 
 | Item | Valor |
 |---|---|
-| **URL pública** | **https://vixt-central.onrender.com** |
+| URL pública | https://vixt-central.onrender.com |
 | Render | Web Service `vixt-central`, plano **Free**, região Oregon |
-| Neon | Projeto `vixt-central` (`winter-pond-31901958`), região aws-us-east-1 |
+| Neon | Projeto `vixt-central`, região aws-us-east-1 |
 | Repositório | https://github.com/sitesqr/vixt-platform |
 | Branch | `master` (auto-deploy) |
 | Node | 22.23.4 (via `.nvmrc`) |
 
-### Build/Start
+## Variáveis de ambiente
+
+Copiar de `.env.example`. Principais:
+
+| Variável | Observação |
+| --- | --- |
+| `DATABASE_URL` | Neon com pooler (`pgbouncer=true`) |
+| `DIRECT_DATABASE_URL` | Neon direta (migrations) |
+| `JWT_SECRET` | `openssl rand -base64 48` |
+| `ANALYTICS_SALT` | `openssl rand -hex 32` |
+| `NEXT_PUBLIC_SITE_URL` | `https://vixt-central.onrender.com` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Usados no seed |
+| `LINK_*_WEB` | URLs reais dos aplicativos existentes |
+
+Nenhuma credencial é versionada.
+
+## Build & Start
 
 ```
 Build: npm install --include=dev && npx prisma generate && npx prisma migrate deploy && npm run build
 Start: npm run start
 ```
 
-### Credenciais
+## Domínio
 
-As variáveis (DATABASE_URL, DIRECT_DATABASE_URL, JWT_SECRET, ANALYTICS_SALT,
-ADMIN_EMAIL/PASSWORD) estão **apenas no painel do Render** e no Neon — nunca
-no repositório. O primeiro administrativo é `admin@vixt.com.br` (senha gerada
-aleatoriamente e entregue ao contratante fora do Git).
+1. Adicionar `vixt.com.br` no Render.
+2. Configurar DNS e certificado TLS.
+3. Ajustar `NEXT_PUBLIC_SITE_URL` e redeploy.
 
-## Estado validado em produção
+## Checklist pós-deploy
 
-- Portal, catálogo, páginas individuais e login: HTTP 200.
-- Catálogo: 2 aplicativos publicados (Oficina e Barbearia) com links WEB reais
-  apontando para os sistemas já existentes.
-- Downloads Android: HTTP 200, SHA-256 idêntico aos artefatos gerados.
-- Redirect WEB: 302 para o aplicativo real.
-- Dashboard admin: indicadores e auditoria funcionando.
-- Migrações aplicadas no Neon (2 migrations).
+- [ ] `GET /` e `/aplicativos` retornam 200.
+- [ ] `/admin` redireciona para `/admin/login`.
+- [ ] Login administrativo funciona.
+- [ ] `GET /sitemap.xml` e `/robots.txt` acessíveis.
+- [ ] `npm audit` sem vulnerabilidades.
+
+## Rollback
+
+Render mantém deploys anteriores. Migrations são forward-only; reversões de
+schema exigem nova migration.

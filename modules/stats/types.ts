@@ -10,11 +10,9 @@ export interface DashboardStats {
     categories: number;
     views: number;
     clicks: number;
-    downloads: number;
   };
   topViewed: { id: string; name: string; slug: string; views: number }[];
-  topDownloaded: { id: string; name: string; slug: string; downloads: number }[];
-  timeline: { date: string; views: number; clicks: number; downloads: number }[];
+  timeline: { date: string; views: number; clicks: number }[];
   recentActivity: {
     id: string;
     action: string;

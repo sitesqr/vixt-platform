@@ -10,7 +10,7 @@ function since(days: number): Date {
 export const statsRepository = {
   async getDashboard(days = 30): Promise<DashboardStats> {
     const from = since(days);
-    const [appCount, published, development, categories, eventCounts, topViewed, topDownloaded, daily, activity, newPublished] =
+    const [appCount, published, development, categories, eventCounts, topViewed, daily, activity, newPublished] =
       await Promise.all([
         prisma.application.count(),
         prisma.application.count({ where: { published: true, status: "AVAILABLE" } }),
@@ -24,13 +24,6 @@ export const statsRepository = {
         prisma.analyticsEvent.groupBy({
           by: ["applicationId"],
           where: { type: "VIEW", createdAt: { gte: from }, applicationId: { not: null } },
-          _count: { _all: true },
-          orderBy: { _count: { applicationId: "desc" } },
-          take: 5,
-        }),
-        prisma.analyticsEvent.groupBy({
-          by: ["applicationId"],
-          where: { type: "DOWNLOAD", createdAt: { gte: from }, applicationId: { not: null } },
           _count: { _all: true },
           orderBy: { _count: { applicationId: "desc" } },
           take: 5,
@@ -52,7 +45,7 @@ export const statsRepository = {
         }),
       ]);
 
-    const ids = [...topViewed, ...topDownloaded]
+    const ids = topViewed
       .map((r) => r.applicationId)
       .filter((v): v is string => Boolean(v));
     const apps = ids.length
@@ -66,13 +59,12 @@ export const statsRepository = {
     const countOf = (type: string) =>
       eventCounts.find((e) => e.type === type)?._count._all ?? 0;
 
-    const timelineMap = new Map<string, { date: string; views: number; clicks: number; downloads: number }>();
+    const timelineMap = new Map<string, { date: string; views: number; clicks: number }>();
     for (const row of daily) {
       const key = row.date.toISOString().slice(0, 10);
-      const entry = timelineMap.get(key) ?? { date: key, views: 0, clicks: 0, downloads: 0 };
+      const entry = timelineMap.get(key) ?? { date: key, views: 0, clicks: 0 };
       entry.views += row.views;
       entry.clicks += row.clicks;
-      entry.downloads += row.downloads;
       timelineMap.set(key, entry);
     }
 
@@ -84,15 +76,10 @@ export const statsRepository = {
         categories,
         views: countOf("VIEW"),
         clicks: countOf("CLICK"),
-        downloads: countOf("DOWNLOAD"),
       },
       topViewed: topViewed.flatMap((r) => {
         const a = r.applicationId ? appById.get(r.applicationId) : null;
         return a ? [{ ...a, views: r._count._all }] : [];
-      }),
-      topDownloaded: topDownloaded.flatMap((r) => {
-        const a = r.applicationId ? appById.get(r.applicationId) : null;
-        return a ? [{ ...a, downloads: r._count._all }] : [];
       }),
       timeline: [...timelineMap.values()],
       recentActivity: activity.map((a) => ({

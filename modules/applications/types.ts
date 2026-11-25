@@ -3,8 +3,6 @@ import type {
   Application,
   Category,
   Distribution,
-  DistributionAvailability,
-  DistributionPlatform,
   AppVersion,
   AppImage,
   Feature,
@@ -48,24 +46,12 @@ export interface DistributionButton {
   id: string;
   label: string;
   type: string;
-  platform: DistributionPlatform;
-  availability: DistributionAvailability;
-  /** URL absoluta somente quando availability === AVAILABLE. */
   url: string | null;
-  fileName: string | null;
-  fileSizeBytes: string | null;
-  checksumSha256: string | null;
-  notes: string | null;
-  trackDownload: boolean;
 }
 
-/** Agrupamento exibido na página do aplicativo. */
+/** Links de acesso exibidos na página do aplicativo. */
 export interface DistributionGroup {
-  web: DistributionButton[];
-  desktop: DistributionButton[];
-  mobile: DistributionButton[];
-  /** Plataformas anunciadas como "Em breve" (sem link). */
-  comingSoon: DistributionPlatform[];
+  links: DistributionButton[];
 }
 
 export interface AppDetail extends AppSummary {
@@ -129,7 +115,6 @@ export interface CatalogFilters {
   sort?: "name" | "popular" | "recent" | "featured";
   page?: number;
   pageSize?: number;
-  /** IDs pré-ordenados por popularidade (preenchido pelo service). */
   orderedIds?: string[];
 }
 

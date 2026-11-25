@@ -6,7 +6,7 @@ import { prisma } from "./prisma";
  * Analytics sem login e sem PII.
  * - sessionHash: SHA-256 de identificador de sessão + salt, truncado a 64 chars.
  * - IP bruto nunca é gravado.
- * - DOWNLOAD com confirmed=false = clique registrado, não instalação confirmada.
+ * - Apenas VIEW e CLICK são registrados; não há downloads na plataforma.
  */
 export function hashSession(identifier: string): string {
   const salt = process.env.ANALYTICS_SALT ?? "vixt-dev-salt-change-me";
@@ -26,7 +26,6 @@ export async function trackEvent(input: {
   distributionId?: string;
   sessionHash?: string;
   referrer?: string;
-  confirmed?: boolean;
 }): Promise<void> {
   try {
     await prisma.analyticsEvent.create({
@@ -36,7 +35,6 @@ export async function trackEvent(input: {
         distributionId: input.distributionId,
         sessionHash: input.sessionHash,
         referrer: input.referrer?.slice(0, 300),
-        confirmed: input.confirmed ?? false,
       },
     });
     await upsertDailyStat(input.type, input.applicationId);
@@ -52,8 +50,7 @@ async function upsertDailyStat(
 ) {
   const date = new Date();
   date.setUTCHours(0, 0, 0, 0);
-  const field =
-    type === "VIEW" ? "views" : type === "CLICK" ? "clicks" : "downloads";
+  const field = type === "VIEW" ? "views" : "clicks";
 
   await prisma.dailyStat.upsert({
     where: { date_applicationId: { date, applicationId } },

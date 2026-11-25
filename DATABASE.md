@@ -2,7 +2,7 @@
 
 PostgreSQL independente. **Nenhum banco dos aplicativos existentes é utilizado.**
 
-## Visão geral das tabelas
+## Tabelas
 
 | Tabela | Finalidade |
 | --- | --- |
@@ -13,11 +13,11 @@ PostgreSQL independente. **Nenhum banco dos aplicativos existentes é utilizado.
 | `features`, `app_images` | Funcionalidades e galeria por aplicativo |
 | `publishers` | Reservado para marketplace futuro (não ativo) |
 | `app_versions` | Histórico de versões (semver, changelog, status) |
-| `distributions` | Links por plataforma (WEB/PLAY_STORE/APK/PWA/DESKTOP/OTHER) |
+| `distributions` | Links de acesso (WEB/OTHER) |
 | `site_contents`, `faqs`, `banners`, `settings` | Conteúdo administrável |
-| `analytics_events`, `daily_stats` | Estatísticas sem PII |
+| `analytics_events`, `daily_stats` | Estatísticas de VIEW/CLICK sem PII |
 
-## Relacionamentos Principais
+## Relacionamentos principais
 
 - `Application` → `Category` (N:1, `SetNull`)
 - `Application` → `Feature`, `AppImage`, `AppVersion` (1:N, `Cascade`)
@@ -29,7 +29,7 @@ PostgreSQL independente. **Nenhum banco dos aplicativos existentes é utilizado.
 
 - Slugs únicos em `applications`, `categories`, `publishers`.
 - `@@unique([applicationId, version])` em `app_versions`.
-- `@@unique([date, applicationId])` em `daily_stats` (agregação diária).
+- `@@unique([date, applicationId])` em `daily_stats`.
 - Índices em `published+status`, `categoryId`, `featured`, `createdAt`,
   `applicationId+type+createdAt` e `expiresAt` (sessões).
 
@@ -40,37 +40,34 @@ npm run db:migrate          # produção (migrate deploy)
 npm run db:dev              # desenvolvimento (migrate dev)
 ```
 
-A migration inicial está em
-`prisma/migrations/20261123000000_init/migration.sql` (gerada via
-`prisma migrate diff --from-empty`, sem necessidade de banco local).
+Migrations versionadas em `prisma/migrations/`. A inicial foi gerada via
+`prisma migrate diff --from-empty`. A última remove campos de distribuição
+que não fazem parte desta versão (sem downloads).
 
 ## Seed
 
 `prisma/seed.ts` é idempotente (usa `upsert`). Cria:
 
-- papéis/permissões;
-- primeiro admin **somente** se `ADMIN_EMAIL` e `ADMIN_PASSWORD` estiverem
-  definidos (senha nunca hardcoded);
-- 5 categorias, 5 aplicativos, FAQs e textos padrão.
+- papéis e permissões;
+- primeiro admin **somente** se `ADMIN_EMAIL` e `ADMIN_PASSWORD` existirem;
+- categorias, aplicativos, FAQs e textos padrão.
 
-Os aplicativos só são publicados se a variável `LINK_<APP>_WEB` correspondente
-contiver uma URL real. Sem link, ficam em `DEVELOPMENT` e **não aparecem** no
-catálogo — evitando botões falsos.
+Aplicativos só são publicados se `LINK_<APP>_WEB` contiver uma URL http(s) real
+e não-local — nunca links inventados. `DEFERRED_SLUGS` mantém adiados
+Borracharia, Lava Rápido e Salão.
 
-## Estratégia de backup (Neon)
+## Backup (Neon)
 
-- **Point-in-Time Recovery (PITR)** do plano Neon (quando habilitado).
-- Backups lógicos periódicos com `pg_dump` agendado fora do horário de pico:
+- Point-in-Time Recovery do plano Neon.
+- Backups lógicos periódicos:
 
 ```bash
 pg_dump "$DIRECT_DATABASE_URL" -Fc -f "backup-vixt-$(date +%F).dump"
 ```
 
-- Restauração de teste trimestral em banco separado antes de qualquer uso real.
-- `DATABASE_URL` usa pooler (pgbouncer); `DIRECT_DATABASE_URL` é usada apenas
-  por migrations e backups.
+- `DATABASE_URL` usa pooler; `DIRECT_DATABASE_URL` é usada por migrations e
+  backups.
 
 ## Armazenamento de arquivos
 
-Fase 1 armazena apenas URLs (`iconUrl`, `imageUrl`) — nenhum binário no banco.
-Fase futura: S3/R2 com chaves por aplicativo e CDN na frente.
+Nenhum arquivo binário é armazenado ou servido. Apenas URLs de imagem.

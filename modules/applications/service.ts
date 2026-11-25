@@ -11,10 +11,6 @@ import type {
   DistributionGroup,
   UpdateApplicationInput,
 } from "./types";
-import type {
-  DistributionAvailability,
-  DistributionPlatform,
-} from "@prisma/client";
 
 const NEW_DAYS = 30;
 const UPDATED_DAYS = 45;
@@ -38,58 +34,19 @@ function toButtons(
     id: string;
     label: string;
     type: string;
-    platform: DistributionPlatform;
-    availability: DistributionAvailability;
     url: string;
-    fileName: string | null;
-    fileSizeBytes: bigint | null;
-    checksumSha256: string | null;
-    notes: string | null;
-    trackDownload: boolean;
     active: boolean;
   }[],
 ): DistributionButton[] {
   return distributions
-    .filter((d) => d.active)
-    .map((d) => {
-      const comingSoon = d.availability === "COMING_SOON";
-      const hasValidUrl = d.url.startsWith("http");
-      return {
-        id: d.id,
-        label: d.label,
-        type: d.type,
-        platform: d.platform,
-        availability: d.availability,
-        // Nunca expomos URL de item "Em breve" — não existe download real.
-        url: comingSoon || !hasValidUrl ? null : d.url,
-        fileName: d.fileName,
-        fileSizeBytes: d.fileSizeBytes?.toString() ?? null,
-        checksumSha256: d.checksumSha256,
-        notes: d.notes,
-        trackDownload: d.trackDownload,
-      };
-    });
+    .filter((d) => d.active && d.url.startsWith("http"))
+    .map((d) => ({ id: d.id, label: d.label, type: d.type, url: d.url }));
 }
 
-export function groupDistributions(buttons: DistributionButton[]): DistributionGroup {
-  // PWA também é uma opção web (instalável pelo navegador, sem APK).
-  const web = buttons.filter(
-    (b) => (b.platform === "WEB" || b.type === "PWA") && b.url,
-  );
-  const desktop = buttons.filter(
-    (b) => ["WINDOWS", "MACOS", "LINUX"].includes(b.platform) && b.url,
-  );
-  const mobile = buttons.filter(
-    (b) => ["ANDROID", "PLAY_STORE"].includes(b.platform) && b.url,
-  );
-  const comingSoon = [
-    ...new Set(
-      buttons
-        .filter((b) => b.availability === "COMING_SOON")
-        .map((b) => b.platform),
-    ),
-  ];
-  return { web, desktop, mobile, comingSoon };
+export function groupDistributions(
+  buttons: DistributionButton[],
+): DistributionGroup {
+  return { links: buttons.filter((b) => b.url) };
 }
 
 export const applicationsService = {
@@ -112,8 +69,6 @@ export const applicationsService = {
     if (!app) return null;
 
     const summary = toSummary(app);
-
-    // Botões gerais + botões das versões publicadas, sem duplicatas por id.
     const seen = new Set<string>();
     const allButtons = [
       ...toButtons(app.distributions),
@@ -152,7 +107,6 @@ export const applicationsService = {
         kind: i.kind,
       })),
       versions: versionsWithButtons,
-      // Botões gerais + os da versão publicada, sem duplicatas.
       distributions: allButtons,
       distributionGroups: groupDistributions(allButtons),
     };
@@ -190,21 +144,17 @@ export const applicationsService = {
     return applicationsRepository.remove(id);
   },
 
-  /** Só publica se houver status DISPONÍVEL e pelo menos um link ativo. */
   async canPublish(id: string): Promise<{ ok: boolean; reason?: string }> {
     const app = await applicationsRepository.findById(id);
     if (!app) return { ok: false, reason: "Aplicativo não encontrado." };
     if (app.status !== "AVAILABLE") {
       return { ok: false, reason: "O status deve ser 'Disponível'." };
     }
-    const activeLinks = app.distributions.filter(
+    const links = app.distributions.filter(
       (d) => d.active && d.url.startsWith("http"),
     );
-    if (activeLinks.length === 0) {
-      return {
-        ok: false,
-        reason: "Cadastre ao menos um link de distribuição ativo.",
-      };
+    if (links.length === 0) {
+      return { ok: false, reason: "Cadastre ao menos um link de acesso ativo." };
     }
     return { ok: true };
   },

@@ -24,7 +24,6 @@ describe("regras de negócio", () => {
   it("não exibe botões sem link funcional", () => {
     const buttons = onlyActiveButtons([
       { active: true, url: "https://play.google.com/store/apps/x", label: "Play" },
-      { active: false, url: "https://apk.vixt.com.br/x.apk", label: "APK" },
       { active: true, url: "", label: "Sem link" },
       { active: true, url: "javascript:alert(1)", label: "Inválido" },
     ]);
@@ -40,12 +39,6 @@ describe("regras de negócio", () => {
     expect(canPublish({ status: "AVAILABLE", links: ["https://x"] })).toBe(true);
     expect(canPublish({ status: "DEVELOPMENT", links: ["https://x"] })).toBe(false);
     expect(canPublish({ status: "AVAILABLE", links: [] })).toBe(false);
-  });
-
-  it("distingue clique de download confirmado", () => {
-    const event = { type: "DOWNLOAD", confirmed: false };
-    expect(event.confirmed).toBe(false);
-    expect(event.type).toBe("DOWNLOAD");
   });
 
   it("aplicativos de terceiros não aparecem no catálogo da Fase 1", () => {

@@ -318,11 +318,9 @@ async function main() {
           data: {
             applicationId: row.id,
             type: app.distributionType,
-            platform: "WEB",
             label: "Acessar versão web",
             url: link,
             active: true,
-            trackDownload: false,
             sortOrder: 0,
           },
         });

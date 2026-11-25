@@ -14,7 +14,6 @@ interface TimelinePoint {
   date: string;
   views: number;
   clicks: number;
-  downloads: number;
 }
 
 export function StatsClient({
@@ -44,7 +43,6 @@ export function StatsClient({
                 <Tooltip />
                 <Area type="monotone" dataKey="views" stroke="#2f6bff" fill="url(#views)" name="Visualizações" />
                 <Area type="monotone" dataKey="clicks" stroke="#06b6d4" fill="transparent" name="Cliques" />
-                <Area type="monotone" dataKey="downloads" stroke="#16a34a" fill="transparent" name="Downloads" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
