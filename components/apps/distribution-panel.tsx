@@ -58,7 +58,7 @@ function ActiveButton({ button }: { button: DistributionButton }) {
   return (
     <a
       href={`/api/public/redirect/${button.id}`}
-      target="_blank"
+      download={button.fileName ?? true}
       rel="noopener noreferrer nofollow"
       className="flex min-h-12 items-center gap-3 rounded-xl bg-[#eff6ff] px-4 py-2.5 text-sm font-bold text-[#1d4ed8] transition-colors hover:bg-[#dbeafe]"
     >
