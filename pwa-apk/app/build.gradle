@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+def keystoreFile = rootProject.file("../mobile/android/keystore.properties")
+def ks = new Properties()
+if (keystoreFile.exists()) ks.load(new FileInputStream(keystoreFile))
+
+android {
+    namespace 'br.com.vixt.pwaapk'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId System.getenv("PWA_APP_ID") ?: "br.com.vixt.pwaapk.oficina"
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            if (ks.getProperty('storeFile')) {
+                storeFile file(ks['storeFile'])
+                storePassword ks['storePassword']
+                keyAlias ks['keyAlias']
+                keyPassword ks['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            if (ks.getProperty('storeFile')) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

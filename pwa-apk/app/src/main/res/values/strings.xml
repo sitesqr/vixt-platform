@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VIXT PWA</string>
+    <string name="pwa_url">https://vixt-central.onrender.com/aplicativos/barbearia</string>
+</resources>

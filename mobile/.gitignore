@@ -3,8 +3,8 @@ android/.gradle/
 android/build/
 android/app/build/
 android/local.properties
-# APKs de demonstração são versionados para que os downloads funcionem
-# no deploy (são artefatos públicos de demonstração, não segredos).
+# APKs instaladores PWA são versionados para que os downloads funcionem
+# no deploy (são artefatos públicos, não segredos).
 
 # Segredos de assinatura
 android/keystore.properties

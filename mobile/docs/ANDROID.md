@@ -1,36 +1,28 @@
-# Android — PWA (abordagem atual)
+# Android — instalação com um clique
 
-## Mudança de abordagem
+## Abordagem final
 
-A distribuição via **APK** foi **descontinuada nesta versão**. O Android exibe
-o aviso "O arquivo pode ser nocivo" (Google Play Protect) para qualquer APK
-instalado fora da Play Store. Para evitar esse aviso, os aplicativos agora são
-disponibilizados como **PWA**: o visitante instala pelo próprio navegador, sem
-sideload e sem aviso de segurança.
+O Chrome/Android **nunca instala PWA silenciosamente** — sempre exige uma
+confirmação. Para atender o pedido de "um clique", criamos um **APK instalador
+leve** (~12 KB) que, ao ser aberto, direciona diretamente para a página do
+aplicativo na VIXT Central, onde a PWA é instalada. O usuário baixa o APK com
+um clique no botão **"Baixar aplicativo no celular"**.
 
-> Os APKs release assinados continuam no repositório como artefatos técnicos,
-> mas **não são mais exibidos no catálogo**.
+| App | APK instalador | Tamanho | SHA-256 |
+|---|---|---|---|
+| VIXT Oficina | `vixt-oficina-pwa-instalador.apk` | 12.717 B | `b2162c09968bab004cdc3df173d9b3bbb3ae0f922cc22db9db6170894b70cc2d` |
+| VIXT Barbearia | `vixt-barbearia-pwa-instalador.apk` | 12.725 B | `17d0d23f0c5167ebb1f1444d12008697d2eaf678e147e0f13f63a5d8c3e26229` |
 
-## Como funciona agora
+- Pacotes: `br.com.vixt.pwaapk.oficina` / `br.com.vixt.pwaapk.barbearia`
+- Assinados com o keystore de release VIXT (`CN=VIXT`).
+- Código-fonte em `pwa-apk/` (Activity mínima que abre a URL da PWA).
+- **Não há versão Desktop** — apenas mobile.
 
-- A VIXT Central tem `manifest.webmanifest`, `sw.js` e ícones 192/512.
-- O catálogo exibe um **botão "Instalar aplicativo (PWA)"**.
-- Ao clicar, o componente captura o evento `beforeinstallprompt` do Chrome e
-  chama `prompt()` **dentro do clique do usuário** — o que instala de fato.
-- Se o navegador não oferecer o prompt (iOS/Safari), o botão mostra instruções
-  para "Adicionar à Tela Inicial".
-- Nenhum download de `.apk` é oferecido — logo, nenhum aviso do Play Protect.
+## Nota sobre o aviso do Android
 
-## Distribuição no banco
+Como todo APK fora da Play Store, o Google Play Protect pode exibir
+"O arquivo pode ser nocivo" na **primeira instalação**. O arquivo é assinado
+pela VIXT e tem ~12 KB — apenas um redirecionador para a PWA oficial.
+Confira o SHA-256 acima e toque em "Instalar mesmo assim".
 
-| App | Distribuições ativas |
-|---|---|
-| VIXT Oficina | Web (sistema real) + PWA (instalação pelo navegador) |
-| VIXT Barbearia | Web (sistema real) + PWA (instalação pelo navegador) |
-
-As distribuições `ANDROID/APK` foram removidas do catálogo.
-
-## Para voltar a APK no futuro
-
-Só quando houver publicação na Play Store (AAB assinado + listing). O keystore
-de release VIXT está documentado no CHANGELOG 0.3.1 e guardado fora do Git.
+Para eliminar definitivamente o aviso, só com publicação na Play Store.

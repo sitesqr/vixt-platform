@@ -1,5 +1,16 @@
 # Changelog — VIXT Central
 
+## [0.3.6] — Instalador PWA com um clique / remoção do Desktop
+
+- APK instalador leve (~12 KB) para Oficina e Barbearia, assinado com chave
+  VIXT (`pwa-apk/`), que abre diretamente a PWA no celular.
+- Banco de produção: removidas distribuições PWA, Desktop e APK antigo;
+  cadastrado `APK/ANDROID` com os novos arquivos e SHA-256.
+- Botão único no catálogo: "Baixar aplicativo no celular".
+- Nenhuma versão Desktop é oferecida.
+
+---
+
 ## [0.3.5] — Correção do manifest e captura antecipada do prompt
 
 - Manifest com ícones `any` e `maskable` separados (safe zone), `id`, `dir`,
