@@ -18,7 +18,7 @@ const adminName = process.env.ADMIN_NAME?.trim() || "Administrador VIXT";
 // Aplicativos que devem aparecer na vitrine mesmo sem link de acesso próprio.
 // A loja exibe o catálogo completo; estes ficam sem botão de acesso até que
 // uma URL real seja configurada (via painel admin ou LINK_<APP>_WEB).
-const STOREFRONT_SLUGS = new Set(["borracharia", "lava-rapido", "salao"]);
+const STOREFRONT_SLUGS = new Set(["borracharia", "lava-rapido"]);
 
 const apps = [
   {
@@ -77,25 +77,6 @@ const apps = [
     distributionEnv: "LINK_BORRACHARIA_WEB",
     distributionType: DistributionType.WEB,
     pwaEnv: "PWA_BORRACHARIA_URL",
-  },
-  {
-    slug: "salao",
-    name: "VIXT Salão",
-    tagline: "Sistema para gestão de salões de beleza.",
-    description:
-      "O VIXT Salão foi pensado para organizar a rotina de salões de beleza: agenda, clientes e atendimentos de forma simples.",
-    objective: "Apoiar a gestão de salões de beleza e seus profissionais.",
-    targetAudience: "Salões de beleza, cabeleireiros e profissionais de beleza.",
-    advantages: [
-      "Agenda e clientes organizados",
-      "Acesso pelo navegador",
-      "Desenvolvido pela VIXT",
-    ],
-    platforms: ["Web"],
-    accentColor: "#db2777",
-    distributionEnv: "LINK_SALAO_WEB",
-    distributionType: DistributionType.WEB,
-    pwaEnv: "PWA_SALAO_URL",
   },
   {
     slug: "beauty",
@@ -312,7 +293,7 @@ async function main() {
           categoryIds[
             app.slug === "oficina" || app.slug === "borracharia" || app.slug === "lava-rapido"
               ? "automotivo"
-              : app.slug === "salao" || app.slug === "barbearia" || app.slug === "beauty"
+              : app.slug === "barbearia" || app.slug === "beauty"
                 ? "beleza"
                 : "gestao-empresarial"
           ],

@@ -53,9 +53,9 @@ que não fazem parte desta versão (sem downloads).
 - categorias, aplicativos, FAQs e textos padrão.
 
 Aplicativos são publicados se `LINK_<APP>_WEB` contiver uma URL http(s) real e
-não-local — nunca links inventados. `STOREFRONT_SLUGS` mantém Borracharia, Lava
-Rápido e Salão visíveis na vitrine mesmo sem link próprio. O seed nunca
-despublica um aplicativo já publicado: despublicações são feitas no painel admin.
+não-local — nunca links inventados. `STOREFRONT_SLUGS` mantém Borracharia e Lava
+Rápido visíveis na vitrine mesmo sem link próprio. O seed nunca despublica um
+aplicativo já publicado: despublicações são feitas no painel admin.
 
 ## Backup (Neon)
 

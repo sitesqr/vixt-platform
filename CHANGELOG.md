@@ -1,10 +1,16 @@
 # Changelog — VIXT Central
 
-## [Não publicado] — Catálogo completo (vitrine)
+## [Não publicado] — Remoção do VIXT Salão
+
+- Aplicativo `salao` removido do seed e do catálogo; não aparece mais na loja.
+
+---
+
+## [Não publicado] - Catálogo completo (vitrine)
 
 - Todos os aplicativos próprios aparecem no catálogo. `STOREFRONT_SLUGS`
-  substitui `DEFERRED_SLUGS`: Borracharia, Lava Rápido e Salão ficam visíveis
-  mesmo sem link de acesso (sem botão até configurarem URL real).
+  substitui `DEFERRED_SLUGS`: Borracharia e Lava Rápido ficam visíveis mesmo
+  sem link de acesso (sem botão até configurarem URL real).
 - O seed nunca mais despublica aplicativos já publicados quando uma
   `LINK_<APP>_WEB` está ausente — a despublicação passa a ser exclusiva do painel.
 
